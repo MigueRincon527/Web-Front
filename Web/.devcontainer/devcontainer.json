@@ -1,0 +1,5 @@
+{
+  "name": "Entorno Angular",
+  "image": "://microsoft.com",
+  "postCreateCommand": "npm install -g @angular/cli && npm install"
+}
