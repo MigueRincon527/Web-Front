@@ -1,0 +1,36 @@
+<div class="nav">
+    <div class="container">
+        <div class="logo">
+            <h1><a routerLink="home">RICH-<span>POWER</span></a></h1>
+        </div>
+        <div class="menu">
+            <ul>
+                <li class="store-menu">
+                    <button
+                        type="button"
+                        class="store-menu-trigger"
+                        aria-controls="store-submenu"
+                        [attr.aria-expanded]="isStoreMenuOpen"
+                        (click)="toggleStoreMenu()"
+                    >
+                        Tienda
+                    </button>
+                    @if (isStoreMenuOpen) {
+                        <ul class="submenu" id="store-submenu">
+                            <li><a href="#" (click)="closeStoreMenu()">Proteinas</a></li>
+                            <li><a href="#" (click)="closeStoreMenu()">Creatinas</a></li>
+                            <li><a href="#" (click)="closeStoreMenu()">Pre-entrenos</a></li>
+                            <li><a href="#" (click)="closeStoreMenu()">Aminoacidos</a></li>
+                            <li><a href="#" (click)="closeStoreMenu()">Accesorios</a></li>
+                        </ul>
+                    }
+                </li>
+                <li><a routerLink="login">Ingresar</a></li>
+                <li class="btn"><a routerLink="register">Registrarse</a></li>
+            </ul>
+        </div>
+        <div class="car">
+            <a href="#">Carrito</a>
+        </div>
+    </div>
+</div>
