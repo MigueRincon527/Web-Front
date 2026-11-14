@@ -1,13 +1,21 @@
 <div class="Registro">
+    <div class="rich">
+        <h2><a routerLink="">RICH-<span>POWER</span></a></h2>
+        <p>BIENVENIDO</p>
+        <label>Unete a la élite del fitness</label>
+    </div>
     <div class="form">
         <form>
-            <label>NOMBRE DE USUARIO:</label>
-            <input type="text" placeholder="Mi nombre...">
-            <label>DIRECCION EMAIL:</label>
-            <input type="text" placeholder="tu@email.com...">
-            <label for=""></label>
-            <label for=""></label>
-
+            <input type="text" placeholder="NOMBRE DE USUARIO:">
+            <input type="text" placeholder="DIRECCION EMAIL:">
+            <input type="text" placeholder="CONTRASEÑA:" required>
+            <input type="text" placeholder="CONFIRMA TU CONTRASEÑA:" required>
+            <div class="politicas">
+                <input type="checkbox">
+                <p>Acepta politicas de privacidad</p>
+            </div>
+            <button>Registrate</button>
+            <p>¿Ya tienes una cuenta? <a routerLink="/register"><span>Ingresa aquí</span></a></p>
         </form>
     </div>
 </div>
