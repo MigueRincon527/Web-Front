@@ -26,3 +26,8 @@
     align-items: center;
     flex-direction: row;
 }
+
+.politicas p {
+    width: 100%;
+}
+
