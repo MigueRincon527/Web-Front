@@ -6,23 +6,18 @@
         <div class="menu">
             <ul>
                 <li class="store-menu">
-                    <button
-                        type="button"
-                        class="store-menu-trigger"
-                        aria-controls="store-submenu"
-                        [attr.aria-expanded]="isStoreMenuOpen"
-                        (click)="toggleStoreMenu()"
-                    >
+                    <button type="button" class="store-menu-trigger" aria-controls="store-submenu"
+                        [attr.aria-expanded]="isStoreMenuOpen" (click)="toggleStoreMenu()">
                         Tienda
                     </button>
                     @if (isStoreMenuOpen) {
-                        <ul class="submenu" id="store-submenu">
-                            <li><a href="#" (click)="closeStoreMenu()">Proteinas</a></li>
-                            <li><a href="#" (click)="closeStoreMenu()">Creatinas</a></li>
-                            <li><a href="#" (click)="closeStoreMenu()">Pre-entrenos</a></li>
-                            <li><a href="#" (click)="closeStoreMenu()">Aminoacidos</a></li>
-                            <li><a href="#" (click)="closeStoreMenu()">Accesorios</a></li>
-                        </ul>
+                    <ul class="submenu" id="store-submenu">
+                        <li><a routerLink="proteinas" (click)="closeStoreMenu()">Proteinas</a></li>
+                        <li><a routerLink="creatinas" (click)="closeStoreMenu()">Creatinas</a></li>
+                        <li><a routerLink="pre-entrenos" (click)="closeStoreMenu()">Pre-entrenos</a></li>
+                        <li><a routerLink="aminoacidos" (click)="closeStoreMenu()">Aminoacidos</a></li>
+                        <li><a routerLink="accesorios" (click)="closeStoreMenu()">Accesorios</a></li>
+                    </ul>
                     }
                 </li>
                 <li><a routerLink="login">Ingresar</a></li>
