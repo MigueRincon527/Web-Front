@@ -8,6 +8,7 @@ import { Creatinas } from './Pages/creatinas/creatinas';
 import { PreEntrenos } from './Pages/pre-entrenos/pre-entrenos';
 import { Proteinas } from './Pages/proteinas/proteinas';
 import { Vitaminas } from './Pages/vitaminas/vitaminas';
+import { Carrito } from './Pages/carrito/carrito';
 
 export const routes: Routes = [
     //Ruta principal Home
@@ -22,5 +23,6 @@ export const routes: Routes = [
     { path: 'creatinas', component: Creatinas },
     { path: 'pre-entrenos', component: PreEntrenos },
     { path: 'proteinas', component: Proteinas },
-    { path: 'vitaminas', component: Vitaminas }
+    { path: 'vitaminas', component: Vitaminas },
+    { path: 'carrito', component: Carrito}
 ];
