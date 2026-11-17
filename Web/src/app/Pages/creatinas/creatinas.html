@@ -1,1 +1,50 @@
-<p>creatinas works!</p>
+<main class="creatinas">
+  <header class="creatinas__cabecera">
+    <h1>Creatinas</h1>
+    <p>Uno de los suplementos más estudiados para mejorar fuerza y rendimiento. Elige la presentación que mejor se adapte a ti.</p>
+  </header>
+
+  <nav class="filtros" aria-label="Tipos de creatina">
+    <ul>
+      @for (filtro of filtros; track filtro) {
+        <li>
+          <button
+            type="button"
+            class="filtros__item"
+            [class.filtros__item--activo]="filtroActivo() === filtro"
+            [attr.aria-pressed]="filtroActivo() === filtro"
+            (click)="seleccionarFiltro(filtro)">
+            {{ filtro }}
+          </button>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <section class="catalogo" aria-label="Catálogo de creatinas">
+    @for (producto of productosFiltrados(); track producto.id) {
+      <article class="tarjeta">
+        @if (producto.etiqueta) {
+          <span class="tarjeta__etiqueta">{{ producto.etiqueta }}</span>
+        }
+        <div class="tarjeta__imagen">
+          <img [src]="producto.imagen" [alt]="producto.alt" loading="lazy">
+        </div>
+        <div class="tarjeta__cuerpo">
+          <h2>{{ producto.nombre }}</h2>
+          <p class="tarjeta__descripcion">{{ producto.descripcion }}</p>
+          <ul class="tarjeta__datos">
+            <li><strong>{{ producto.gramosPorToma }} g</strong> de creatina por toma</li>
+            <li><strong>{{ producto.presentacion }}</strong> · {{ producto.tomas }} tomas</li>
+          </ul>
+          <div class="tarjeta__pie">
+            <p class="tarjeta__precio">{{ formatearPrecio(producto.precio) }}</p>
+            <button type="button" (click)="agregarAlCarrito(producto)">Añadir</button>
+          </div>
+        </div>
+      </article>
+    } @empty {
+      <p class="catalogo__vacio">No hay productos en esta categoría todavía.</p>
+    }
+  </section>
+</main>

@@ -1,1 +1,50 @@
-<p>accesorios works!</p>
+<main class="accesorios">
+  <header class="accesorios__cabecera">
+    <h1>Accesorios</h1>
+    <p>Shakers, cinturones y todo lo que necesitas para entrenar y llevar tus suplementos a donde vayas.</p>
+  </header>
+
+  <nav class="filtros" aria-label="Tipos de accesorios">
+    <ul>
+      @for (filtro of filtros; track filtro) {
+        <li>
+          <button
+            type="button"
+            class="filtros__item"
+            [class.filtros__item--activo]="filtroActivo() === filtro"
+            [attr.aria-pressed]="filtroActivo() === filtro"
+            (click)="seleccionarFiltro(filtro)">
+            {{ filtro }}
+          </button>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <section class="catalogo" aria-label="Catálogo de accesorios">
+    @for (producto of productosFiltrados(); track producto.id) {
+      <article class="tarjeta">
+        @if (producto.etiqueta) {
+          <span class="tarjeta__etiqueta">{{ producto.etiqueta }}</span>
+        }
+        <div class="tarjeta__imagen">
+          <img [src]="producto.imagen" [alt]="producto.alt" loading="lazy">
+        </div>
+        <div class="tarjeta__cuerpo">
+          <h2>{{ producto.nombre }}</h2>
+          <p class="tarjeta__descripcion">{{ producto.descripcion }}</p>
+          <ul class="tarjeta__datos">
+            <li><strong>{{ producto.medida }}</strong></li>
+            <li>{{ producto.material }}</li>
+          </ul>
+          <div class="tarjeta__pie">
+            <p class="tarjeta__precio">{{ formatearPrecio(producto.precio) }}</p>
+            <button type="button" (click)="agregarAlCarrito(producto)">Añadir</button>
+          </div>
+        </div>
+      </article>
+    } @empty {
+      <p class="catalogo__vacio">No hay productos en esta categoría todavía.</p>
+    }
+  </section>
+</main>

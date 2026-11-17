@@ -1,1 +1,58 @@
-<p>pre-entrenos works!</p>
+<main class="pre-entrenos">
+  <header class="pre-entrenos__cabecera">
+    <h1>Pre-entrenos</h1>
+    <p>Más energía y enfoque para tu sesión. Elige según la cafeína que toleras y la hora a la que entrenas.</p>
+  </header>
+
+  <nav class="filtros" aria-label="Tipos de pre-entreno">
+    <ul>
+      @for (filtro of filtros; track filtro) {
+        <li>
+          <button
+            type="button"
+            class="filtros__item"
+            [class.filtros__item--activo]="filtroActivo() === filtro"
+            [attr.aria-pressed]="filtroActivo() === filtro"
+            (click)="seleccionarFiltro(filtro)">
+            {{ filtro }}
+          </button>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <section class="catalogo" aria-label="Catálogo de pre-entrenos">
+    @for (producto of productosFiltrados(); track producto.id) {
+      <article class="tarjeta">
+        @if (producto.etiqueta) {
+          <span class="tarjeta__etiqueta">{{ producto.etiqueta }}</span>
+        }
+        <div class="tarjeta__imagen">
+          <img [src]="producto.imagen" [alt]="producto.alt" loading="lazy">
+        </div>
+        <div class="tarjeta__cuerpo">
+          <h2>{{ producto.nombre }}</h2>
+          <p class="tarjeta__descripcion">{{ producto.descripcion }}</p>
+          <ul class="tarjeta__datos">
+            @if (producto.cafeinaMg > 0) {
+              <li><strong>{{ producto.cafeinaMg }} mg</strong> de cafeína por toma</li>
+            } @else {
+              <li><strong>Sin cafeína</strong></li>
+            }
+            <li><strong>{{ producto.presentacion }}</strong> · {{ producto.tomas }} tomas</li>
+          </ul>
+          <div class="tarjeta__pie">
+            <p class="tarjeta__precio">{{ formatearPrecio(producto.precio) }}</p>
+            <button type="button" (click)="agregarAlCarrito(producto)">Añadir</button>
+          </div>
+        </div>
+      </article>
+    } @empty {
+      <p class="catalogo__vacio">No hay productos en esta categoría todavía.</p>
+    }
+  </section>
+
+  <p class="pre-entrenos__aviso">
+    Productos con cafeína no recomendados para menores de edad, embarazadas ni personas con condiciones cardíacas. Consulta a tu médico si tienes dudas.
+  </p>
+</main>

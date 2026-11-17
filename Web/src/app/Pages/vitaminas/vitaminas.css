@@ -1,0 +1,216 @@
+:host {
+  display: block;
+  --lima: #bfff00;
+  --lima-hover: #a6e600;
+  --fondo: #1a1a1a;
+  --superficie: #333;
+  --superficie-oscura: #222;
+  --borde: #4f4e4e;
+  --texto-suave: #919090;
+}
+
+/* El <main> global ya tiene fondo y min-height; aquí solo añadimos espaciado */
+.vitaminas {
+  padding: 40px 24px 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.vitaminas__cabecera {
+  margin-bottom: 28px;
+}
+
+.vitaminas__cabecera h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin: 0 0 8px;
+}
+
+.vitaminas__cabecera p {
+  font-family: 'Open Sans', 'Segoe UI', sans-serif;
+  color: var(--texto-suave);
+  max-width: 55ch;
+  margin: 0;
+}
+
+/* ---------- Filtros ---------- */
+.filtros ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.filtros__item {
+  /* Reset para que el <button> se vea igual que el <a> del diseño original */
+  appearance: none;
+  margin: 0;
+  background: transparent;
+  font: inherit;
+  line-height: inherit;
+  box-sizing: content-box;
+  cursor: pointer;
+
+  display: inline-block;
+  padding: 8px 18px;
+  border: 1px solid var(--borde);
+  border-radius: 50px;
+  font-size: 14px;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.filtros__item:hover {
+  border-color: var(--lima);
+}
+
+.filtros__item--activo {
+  background-color: var(--lima);
+  border-color: var(--lima);
+  color: #000;
+  font-weight: 600;
+}
+
+/* ---------- Catálogo ---------- */
+.catalogo__vacio {
+  grid-column: 1 / -1;
+  color: var(--texto-suave);
+}
+
+.catalogo {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.tarjeta {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.tarjeta:hover {
+  border-color: var(--lima);
+  transform: translateY(-4px);
+}
+
+.tarjeta__etiqueta {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 1;
+  padding: 4px 12px;
+  border-radius: 50px;
+  background-color: var(--lima);
+  color: #000;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tarjeta__imagen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 220px;
+  background-color: var(--superficie-oscura);
+}
+
+.tarjeta__imagen img {
+  max-height: 85%;
+  max-width: 80%;
+  object-fit: contain;
+}
+
+.tarjeta__cuerpo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 10px;
+  padding: 20px;
+}
+
+.tarjeta__cuerpo h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.tarjeta__descripcion {
+  font-family: 'Open Sans', 'Segoe UI', sans-serif;
+  font-size: 14px;
+  color: var(--texto-suave);
+  margin: 0;
+}
+
+.tarjeta__datos {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+.tarjeta__datos strong {
+  color: var(--lima);
+}
+
+.tarjeta__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--borde);
+}
+
+.tarjeta__precio {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.tarjeta__pie button {
+  padding: 10px 22px;
+  border: none;
+  border-radius: 50px;
+  background-color: var(--lima);
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.tarjeta__pie button:hover {
+  background-color: var(--lima-hover);
+}
+
+.filtros__item:focus-visible,
+.tarjeta__pie button:focus-visible {
+  outline: 2px solid var(--lima);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tarjeta,
+  .filtros__item,
+  .tarjeta__pie button {
+    transition: none;
+  }
+  .tarjeta:hover {
+    transform: none;
+  }
+}
+
+/* ---------- Aviso ---------- */
+.vitaminas__aviso {
+  margin: 40px 0 0;
+  max-width: 70ch;
+  font-family: 'Open Sans', 'Segoe UI', sans-serif;
+  font-size: 12px;
+  color: var(--texto-suave);
+}
