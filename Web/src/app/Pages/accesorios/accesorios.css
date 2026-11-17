@@ -22,13 +22,13 @@
 }
 
 .accesorios__cabecera h1 {
-  font-family: 'Montserrat', sans-serif;
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-family: var(--fuente-titulos);
+  font-size: clamp(2.75rem, 8vw, 5rem);
   margin: 0 0 8px;
 }
 
 .accesorios__cabecera p {
-  font-family: 'Open Sans', 'Segoe UI', sans-serif;
+  font-family: var(--fuente-texto);
   color: var(--texto-suave);
   max-width: 55ch;
   margin: 0;
@@ -47,7 +47,10 @@
   appearance: none;
   margin: 0;
   background: transparent;
-  font: inherit;
+  font-family: var(--fuente-titulos);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   line-height: inherit;
   box-sizing: content-box;
   cursor: pointer;
@@ -56,7 +59,7 @@
   padding: 8px 18px;
   border: 1px solid var(--borde);
   border-radius: 50px;
-  font-size: 14px;
+  font-size: 16px;
   transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
@@ -135,13 +138,13 @@
 }
 
 .tarjeta__cuerpo h2 {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.2rem;
+  font-family: var(--fuente-titulos);
+  font-size: 1.6rem;
   margin: 0;
 }
 
 .tarjeta__descripcion {
-  font-family: 'Open Sans', 'Segoe UI', sans-serif;
+  font-family: var(--fuente-texto);
   font-size: 14px;
   color: var(--texto-suave);
   margin: 0;
@@ -170,8 +173,9 @@
 
 .tarjeta__precio {
   margin: 0;
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-family: var(--fuente-titulos);
+  font-size: 1.75rem;
+  font-weight: 800;
 }
 
 .tarjeta__pie button {
