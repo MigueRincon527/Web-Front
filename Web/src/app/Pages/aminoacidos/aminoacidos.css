@@ -194,6 +194,7 @@
 }
 
 .filtros__item:focus-visible,
+.tarjeta__imagen:focus-visible,
 .tarjeta__pie button:focus-visible {
   outline: 2px solid var(--lima);
   outline-offset: 3px;

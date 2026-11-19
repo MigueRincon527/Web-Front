@@ -27,15 +27,19 @@
         @if (producto.etiqueta) {
           <span class="tarjeta__etiqueta">{{ producto.etiqueta }}</span>
         }
-        <div class="tarjeta__imagen">
+        <a
+          class="tarjeta__imagen"
+          [routerLink]="['/producto', producto.id]"
+          [attr.aria-label]="'Ver detalles de ' + producto.nombre">
           <img [src]="producto.imagen" [alt]="producto.alt" loading="lazy">
-        </div>
+        </a>
         <div class="tarjeta__cuerpo">
           <h2>{{ producto.nombre }}</h2>
           <p class="tarjeta__descripcion">{{ producto.descripcion }}</p>
           <ul class="tarjeta__datos">
-            <li><strong>{{ producto.aporte }}</strong></li>
-            <li>{{ producto.presentacion }} · {{ producto.porciones }} porciones</li>
+            @for (dato of producto.datos; track $index) {
+              <li>@if (dato.resaltado) {<strong>{{ dato.resaltado }}</strong>}{{ ' ' + dato.texto }}</li>
+            }
           </ul>
           <div class="tarjeta__pie">
             <p class="tarjeta__precio">{{ formatearPrecio(producto.precio) }}</p>

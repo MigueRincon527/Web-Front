@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { CarritoService } from '../../Services/carrito.service/carrito.service';
 
 
 @Component({
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterLink],
   selector: 'app-header',
   styleUrl: './header.css',
   templateUrl: './header.html',

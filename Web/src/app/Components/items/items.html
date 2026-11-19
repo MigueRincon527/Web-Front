@@ -5,14 +5,17 @@
   </header>
 
   <div class="productos">
-    @for (producto of productos(); track producto.id) {
+    @for (producto of productos; track producto.id) {
       <article class="item">
-        <a href="#" class="item__imagen" [attr.aria-label]="'Ver ' + producto.nombre">
+        <a
+          class="item__imagen"
+          [routerLink]="['/producto', producto.id]"
+          [attr.aria-label]="'Ver detalles de ' + producto.nombre">
           <img [src]="producto.imagen" [alt]="producto.alt" loading="lazy">
         </a>
         <div class="item__cuerpo">
           <h3>{{ producto.nombre }}</h3>
-          <p class="item__detalle">{{ producto.detalle }}</p>
+          <p class="item__detalle">{{ producto.descripcion }}</p>
           <div class="item__pie">
             <p class="item__precio">{{ formatearPrecio(producto.precio) }}</p>
             <button type="button" (click)="agregarAlCarrito(producto)">Agregar</button>

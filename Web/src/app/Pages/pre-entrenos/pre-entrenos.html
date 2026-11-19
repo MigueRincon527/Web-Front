@@ -27,19 +27,19 @@
         @if (producto.etiqueta) {
           <span class="tarjeta__etiqueta">{{ producto.etiqueta }}</span>
         }
-        <div class="tarjeta__imagen">
+        <a
+          class="tarjeta__imagen"
+          [routerLink]="['/producto', producto.id]"
+          [attr.aria-label]="'Ver detalles de ' + producto.nombre">
           <img [src]="producto.imagen" [alt]="producto.alt" loading="lazy">
-        </div>
+        </a>
         <div class="tarjeta__cuerpo">
           <h2>{{ producto.nombre }}</h2>
           <p class="tarjeta__descripcion">{{ producto.descripcion }}</p>
           <ul class="tarjeta__datos">
-            @if (producto.cafeinaMg > 0) {
-              <li><strong>{{ producto.cafeinaMg }} mg</strong> de cafeína por toma</li>
-            } @else {
-              <li><strong>Sin cafeína</strong></li>
+            @for (dato of producto.datos; track $index) {
+              <li>@if (dato.resaltado) {<strong>{{ dato.resaltado }}</strong>}{{ ' ' + dato.texto }}</li>
             }
-            <li><strong>{{ producto.presentacion }}</strong> · {{ producto.tomas }} tomas</li>
           </ul>
           <div class="tarjeta__pie">
             <p class="tarjeta__precio">{{ formatearPrecio(producto.precio) }}</p>

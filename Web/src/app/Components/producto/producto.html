@@ -1,1 +1,159 @@
-<p>producto works!</p>
+@if (producto(); as p) {
+  <section class="detalle">
+    @if (seccion(); as s) {
+      <a class="detalle__volver" [routerLink]="'/' + s.ruta">← Volver a {{ s.titulo }}</a>
+    }
+
+    <div class="detalle__principal">
+      <div class="detalle__imagen">
+        <img [src]="p.imagen" [alt]="p.alt">
+      </div>
+
+      <div class="detalle__info">
+        <div class="detalle__meta">
+          <span class="detalle__categoria">{{ p.categoria }}</span>
+          @if (p.etiqueta) {
+            <span class="detalle__etiqueta">{{ p.etiqueta }}</span>
+          }
+        </div>
+
+        <h1>{{ p.nombre }}</h1>
+
+        <button
+          type="button"
+          class="detalle__valoracion"
+          (click)="bloqueResenas.scrollIntoView({ behavior: 'smooth' })">
+          <span class="estrellas" aria-hidden="true">
+            <span>{{ estrellasLlenas(promedio()) }}</span><span class="estrellas__vacia">{{ estrellasVacias(promedio()) }}</span>
+          </span>
+          <span class="detalle__valoracion-texto">{{ resumenValoracion() }}</span>
+        </button>
+
+        <p class="detalle__precio">{{ formatearPrecio(p.precio) }}</p>
+        <p class="detalle__resumen">{{ p.descripcion }}</p>
+
+        <div class="compra">
+          <div class="compra__cantidad" role="group" aria-label="Cantidad">
+            <button
+              type="button"
+              [disabled]="cantidad() === 1"
+              aria-label="Quitar una unidad"
+              (click)="cambiarCantidad(-1)">−</button>
+            <span class="compra__unidades" aria-live="polite">{{ cantidad() }}</span>
+            <button
+              type="button"
+              aria-label="Agregar una unidad"
+              (click)="cambiarCantidad(1)">+</button>
+          </div>
+          <button type="button" class="compra__agregar" (click)="agregarAlCarrito(p)">
+            Agregar al carrito
+          </button>
+        </div>
+
+        <p class="compra__estado" role="status">
+          @if (agregado()) {
+            Agregado al carrito. <a routerLink="/carrito">Ir al carrito</a>
+          }
+        </p>
+      </div>
+    </div>
+
+    <section class="bloque" aria-labelledby="titulo-descripcion">
+      <h2 id="titulo-descripcion">Descripción</h2>
+      <p class="bloque__texto">{{ p.descripcionLarga }}</p>
+
+      @if (p.datos.length > 0) {
+        <h3>Características</h3>
+        <ul class="caracteristicas">
+          @for (dato of p.datos; track $index) {
+            <li>@if (dato.resaltado) {<strong>{{ dato.resaltado }}</strong>}{{ ' ' + dato.texto }}</li>
+          }
+        </ul>
+      }
+    </section>
+
+    <section class="bloque" #bloqueResenas aria-labelledby="titulo-resenas">
+      <h2 id="titulo-resenas">Reseñas</h2>
+
+      <div class="resenas">
+        <div class="resenas__lista">
+          @if (resenas().length === 0) {
+            <p class="resenas__vacio">Todavía no hay reseñas de este producto. ¡Sé el primero en opinar!</p>
+          } @else {
+            <p class="resenas__resumen">{{ resumenValoracion() }}</p>
+            <ul>
+              @for (r of resenas(); track r.id) {
+                <li class="resena">
+                  <div class="resena__cabecera">
+                    <p class="resena__autor">{{ r.autor }}</p>
+                    <span
+                      class="estrellas"
+                      role="img"
+                      [attr.aria-label]="r.calificacion + ' de 5 estrellas'">
+                      <span>{{ estrellasLlenas(r.calificacion) }}</span><span class="estrellas__vacia">{{ estrellasVacias(r.calificacion) }}</span>
+                    </span>
+                  </div>
+                  <p class="resena__fecha">{{ formatearFecha(r.fecha) }}</p>
+                  <p class="resena__comentario">{{ r.comentario }}</p>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
+        <div class="resena-form" [formGroup]="formulario">
+          <h3>Escribe tu reseña</h3>
+
+          <div class="campo">
+            <p class="campo__etiqueta" id="etiqueta-calificacion">Tu calificación</p>
+            <div class="calificar" role="group" aria-labelledby="etiqueta-calificacion">
+              @for (n of numeros; track n) {
+                <button
+                  type="button"
+                  class="calificar__estrella"
+                  [class.calificar__estrella--activa]="n <= calificacion()"
+                  [attr.aria-pressed]="n === calificacion()"
+                  [attr.aria-label]="n === 1 ? '1 estrella' : n + ' estrellas'"
+                  (click)="calificacion.set(n)">★</button>
+              }
+            </div>
+            @if (errorCalificacion()) {
+              <p class="campo__error" role="alert">Elige una calificación de 1 a 5 estrellas.</p>
+            }
+          </div>
+
+          <div class="campo">
+            <label for="resena-autor">Tu nombre</label>
+            <input id="resena-autor" type="text" formControlName="autor" maxlength="40" autocomplete="name">
+            @if (invalido('autor')) {
+              <p class="campo__error" role="alert">Escribe tu nombre (mínimo 2 letras).</p>
+            }
+          </div>
+
+          <div class="campo">
+            <label for="resena-comentario">Tu opinión</label>
+            <textarea id="resena-comentario" formControlName="comentario" rows="5" maxlength="600"></textarea>
+            <p class="campo__ayuda">{{ formulario.controls.comentario.value.length }}/600</p>
+            @if (invalido('comentario')) {
+              <p class="campo__error" role="alert">Cuéntanos un poco más (mínimo 10 caracteres).</p>
+            }
+          </div>
+
+          <button type="button" class="resena-form__publicar" (click)="publicar()">Publicar reseña</button>
+
+          <p class="campo__exito" role="status">
+            @if (publicada()) {
+              ¡Gracias! Tu reseña fue publicada.
+            }
+          </p>
+        </div>
+      </div>
+    </section>
+  </section>
+} @else {
+  <section class="detalle detalle--vacio">
+    <h1>Producto no encontrado</h1>
+    <p>No encontramos el producto que buscas. Puede que ya no esté disponible.</p>
+    <a routerLink="/" class="detalle__enlace">Volver al inicio</a>
+  </section>
+}
