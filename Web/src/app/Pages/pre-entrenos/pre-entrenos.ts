@@ -1,5 +1,6 @@
-import { Component, computed, output, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { CarritoService } from '../../Services/carrito.service/carrito.service';
 
 export type CategoriaPreEntreno = 'Estimulante' | 'Moderado' | 'Sin estimulantes';
 export type FiltroPreEntreno = 'Todos' | CategoriaPreEntreno;
@@ -25,6 +26,8 @@ export interface PreEntreno {
   templateUrl: './pre-entrenos.html',
 })
 export class PreEntrenos {
+  private readonly carrito = inject(CarritoService);
+
   readonly filtros: FiltroPreEntreno[] = ['Todos', 'Estimulante', 'Moderado', 'Sin estimulantes'];
 
   private readonly productos = signal<PreEntreno[]>([
@@ -89,15 +92,17 @@ export class PreEntrenos {
       : this.productos().filter((p) => p.categoria === filtro);
   });
 
-  /** Se emite al pulsar "Añadir"; el padre (o un servicio de carrito) lo recibe. */
-  readonly agregar = output<PreEntreno>();
-
   seleccionarFiltro(filtro: FiltroPreEntreno): void {
     this.filtroActivo.set(filtro);
   }
 
   agregarAlCarrito(producto: PreEntreno): void {
-    this.agregar.emit(producto);
+    this.carrito.agregar({
+      id: 'pre-entrenos-' + producto.id,
+      nombre: producto.nombre,
+      precio: producto.precio,
+      imagen: producto.imagen,
+    });
   }
 
   formatearPrecio(valor: number): string {

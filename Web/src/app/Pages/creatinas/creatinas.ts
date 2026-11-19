@@ -1,5 +1,6 @@
-import { Component, computed, output, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { CarritoService } from '../../Services/carrito.service/carrito.service';
 
 export type CategoriaCreatina = 'Monohidrato' | 'Micronizada' | 'HCl' | 'Cápsulas';
 export type FiltroCreatina = 'Todas' | CategoriaCreatina;
@@ -25,6 +26,8 @@ export interface Creatina {
   templateUrl: './creatinas.html',
 })
 export class Creatinas {
+  private readonly carrito = inject(CarritoService);
+
   readonly filtros: FiltroCreatina[] = ['Todas', 'Monohidrato', 'Micronizada', 'HCl', 'Cápsulas'];
 
   private readonly productos = signal<Creatina[]>([
@@ -89,15 +92,17 @@ export class Creatinas {
       : this.productos().filter((p) => p.categoria === filtro);
   });
 
-  /** Se emite al pulsar "Añadir"; el padre (o un servicio de carrito) lo recibe. */
-  readonly agregar = output<Creatina>();
-
   seleccionarFiltro(filtro: FiltroCreatina): void {
     this.filtroActivo.set(filtro);
   }
 
   agregarAlCarrito(producto: Creatina): void {
-    this.agregar.emit(producto);
+    this.carrito.agregar({
+      id: 'creatinas-' + producto.id,
+      nombre: producto.nombre,
+      precio: producto.precio,
+      imagen: producto.imagen,
+    });
   }
 
   formatearPrecio(valor: number): string {
@@ -108,4 +113,3 @@ export class Creatinas {
     }).format(valor);
   }
 }
-

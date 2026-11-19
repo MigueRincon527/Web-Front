@@ -1,5 +1,5 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { Footer } from './Components/footer/footer';
 import { Header } from './Components/header/header';
 import { Home } from './Components/home/home';
@@ -12,6 +12,12 @@ import { Home } from './Components/home/home';
 })
 export class App {
   protected readonly title = signal('Web');
+  readonly router = inject(Router);
+
+  mostrarNavegacion(): boolean {
+    const ruta = this.router.url.split(/[?#]/)[0];
+    return ruta !== '/login' && ruta !== '/register';
+  }
 }
 
 

@@ -1,5 +1,6 @@
-import { Component, computed, output, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { CarritoService } from '../../Services/carrito.service/carrito.service';
 
 export type CategoriaAminoacido = 'BCAA' | 'EAA' | 'Glutamina' | 'Citrulina';
 export type FiltroAminoacido = 'Todos' | CategoriaAminoacido;
@@ -25,6 +26,8 @@ export interface Aminoacido {
   templateUrl: './aminoacidos.html',
 })
 export class Aminoacidos {
+  private readonly carrito = inject(CarritoService);
+
   readonly filtros: FiltroAminoacido[] = ['Todos', 'BCAA', 'EAA', 'Glutamina', 'Citrulina'];
 
   private readonly productos = signal<Aminoacido[]>([
@@ -89,15 +92,17 @@ export class Aminoacidos {
       : this.productos().filter((p) => p.categoria === filtro);
   });
 
-  /** Se emite al pulsar "Añadir"; el padre (o un servicio de carrito) lo recibe. */
-  readonly agregar = output<Aminoacido>();
-
   seleccionarFiltro(filtro: FiltroAminoacido): void {
     this.filtroActivo.set(filtro);
   }
 
   agregarAlCarrito(producto: Aminoacido): void {
-    this.agregar.emit(producto);
+    this.carrito.agregar({
+      id: 'aminoacidos-' + producto.id,
+      nombre: producto.nombre,
+      precio: producto.precio,
+      imagen: producto.imagen,
+    });
   }
 
   formatearPrecio(valor: number): string {

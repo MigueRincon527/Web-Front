@@ -1,7 +1,11 @@
-<header>
-    <app-header></app-header>
-</header>
+@if (mostrarNavegacion()) {
+    <header>
+        <app-header></app-header>
+    </header>
+}
 <main>
     <router-outlet />
 </main>
-<app-footer></app-footer>
+@if (mostrarNavegacion()) {
+    <app-footer></app-footer>
+}

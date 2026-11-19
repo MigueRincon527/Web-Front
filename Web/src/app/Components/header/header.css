@@ -97,3 +97,27 @@ ul {
 .btn:hover a {
     color: #fff;
 }
+
+.car {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.car a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.header__contador {
+    display: inline-grid;
+    place-items: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: #a5d80a;
+    color: #000;
+    font-size: 0.875rem;
+    font-weight: 700;
+}

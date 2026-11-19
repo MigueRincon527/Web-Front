@@ -1,61 +1,139 @@
-.catalogo {
-    display: flex;
-    flex-direction: column;
-    width: min(100% - 32px, 1000px);
-    margin: 40px auto;
+:host {
+  display: block;
+  --lima: #bfff00;
+  --lima-hover: #a6e600;
+  --superficie: #333;
+  --borde: #4f4e4e;
+  --texto-suave: #919090;
 }
 
+.catalogo {
+  width: min(100% - 32px, 1200px);
+  margin: 40px auto;
+}
+
+/* ---------- Cabecera ---------- */
+.catalogo__cabecera {
+  margin-bottom: 28px;
+}
+
+.catalogo__etiqueta {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-family: var(--fuente-titulos);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--lima);
+}
+
+.catalogo__cabecera h2 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+}
+
+/* ---------- Rejilla ---------- */
 .productos {
-    display: flex;
-    justify-content: center;
-    align-items: stretch;
-    gap: 25px;
-    margin-top: 12px;
-    flex-direction: row;
-    flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
 }
 
 .item {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    border: 1px solid #385400;
-    border-radius: 10px;
-    padding: 12px;
-    background-color: #050505;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    flex: 1 1 200px;
-    max-width: 180px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
 }
 
-.item img {
-    display: block;
-    width: 100%;
-    height: 180px;
-    object-fit: contain;
-    border-radius: 10px;
+.item:hover {
+  border-color: var(--lima);
+  transform: translateY(-4px);
 }
 
-.btn {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-top: 8px;
+/* Panel claro: las fotos de producto suelen venir con fondo blanco */
+.item__imagen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 220px;
+  padding: 16px;
+  box-sizing: border-box;
+  background-color: #f4f4f4;
 }
 
-.btn button {
-    background-color: #bfff00;
-    color: #000;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.item__imagen img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
 }
 
-.btn button:hover {
-    background-color: #0d0d0d;
-    color: #bfff00;
+.item__cuerpo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8px;
+  padding: 18px 20px 20px;
+}
+
+.item__cuerpo h3 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.item__detalle {
+  margin: 0;
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
+.item__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--borde);
+}
+
+.item__precio {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-size: 1.75rem;
+  font-weight: 800;
+}
+
+.item__pie button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 50px;
+  background-color: var(--lima);
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.item__pie button:hover {
+  background-color: var(--lima-hover);
+}
+
+.item__imagen:focus-visible,
+.item__pie button:focus-visible {
+  outline: 2px solid var(--lima);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item {
+    transition: none;
+  }
+  .item:hover {
+    transform: none;
+  }
 }

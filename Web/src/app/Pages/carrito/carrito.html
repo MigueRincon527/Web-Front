@@ -1,50 +1,79 @@
-<div class="carrito-container">
-  <h2 class="carrito-titulo">🛒 Mi Carrito de Compras</h2>
+<section class="carrito">
+  <header class="carrito__cabecera">
+    <span class="carrito__etiqueta">TU PEDIDO</span>
+    <h1>Mi carrito</h1>
+    @if (unidades() > 0) {
+      <p class="carrito__conteo">
+        {{ unidades() }} {{ unidades() === 1 ? 'producto' : 'productos' }}
+      </p>
+    }
+  </header>
 
-  <div *ngIf="productos.length === 0" class="carrito-vacio">
-    <p>Tu carrito está vacío.</p>
-  </div>
-
-  <div *ngIf="productos.length > 0" class="carrito-contenido">
-    <div class="lista-productos">
-      <div class="item-producto" *ngFor="let producto of productos">
-        <img [src]="producto.imagen" [alt]="producto.nombre" class="item-imagen" />
-
-        <div class="item-info">
-          <h3>{{ producto.nombre }}</h3>
-          <p class="item-precio">{{ formatearPrecio(producto.precio) }}</p>
-        </div>
-
-        <div class="item-cantidad">
-          <button (click)="disminuirCantidad(producto)">-</button>
-          <span>{{ producto.cantidad }}</span>
-          <button (click)="aumentarCantidad(producto)">+</button>
-        </div>
-
-        <div class="item-subtotal">
-          {{ formatearPrecio(producto.precio * producto.cantidad) }}
-        </div>
-
-        <button class="btn-eliminar" (click)="eliminarProducto(producto.id)">✕</button>
-      </div>
+  @if (productos().length === 0) {
+    <div class="carrito__vacio">
+      <h2>Tu carrito está vacío</h2>
+      <p>Agrega proteínas, creatinas y más para empezar tu pedido.</p>
+      <a routerLink="/" class="carrito__enlace">Ver productos</a>
     </div>
+  } @else {
+    <div class="carrito__contenido">
+      <ul class="lista">
+        @for (producto of productos(); track producto.id) {
+          <li class="item">
+            <div class="item__imagen">
+              <img [src]="producto.imagen" [alt]="producto.nombre" loading="lazy">
+            </div>
 
-    <div class="resumen-carrito">
-      <div class="resumen-linea">
-        <span>Subtotal</span>
-        <span>{{ formatearPrecio(subtotal) }}</span>
-      </div>
-      <div class="resumen-linea">
-        <span>Envío</span>
-        <span>{{ formatearPrecio(envio) }}</span>
-      </div>
-      <div class="resumen-linea total">
-        <span>Total</span>
-        <span>{{ formatearPrecio(total) }}</span>
-      </div>
+            <div class="item__info">
+              <h3>{{ producto.nombre }}</h3>
+              <p class="item__precio">{{ formatearPrecio(producto.precio) }} c/u</p>
+            </div>
 
-      <button class="btn-comprar">Finalizar compra</button>
-      <button class="btn-vaciar" (click)="vaciarCarrito()">Vaciar carrito</button>
+            <div class="item__cantidad" role="group" [attr.aria-label]="'Cantidad de ' + producto.nombre">
+              <button
+                type="button"
+                [disabled]="producto.cantidad === 1"
+                [attr.aria-label]="'Quitar una unidad de ' + producto.nombre"
+                (click)="disminuirCantidad(producto.id)">−</button>
+              <span class="item__unidades" aria-live="polite">{{ producto.cantidad }}</span>
+              <button
+                type="button"
+                [attr.aria-label]="'Agregar una unidad de ' + producto.nombre"
+                (click)="aumentarCantidad(producto.id)">+</button>
+            </div>
+
+            <p class="item__subtotal">{{ formatearPrecio(producto.precio * producto.cantidad) }}</p>
+
+            <button
+              type="button"
+              class="item__eliminar"
+              [attr.aria-label]="'Eliminar ' + producto.nombre + ' del carrito'"
+              (click)="eliminarProducto(producto.id)">×</button>
+          </li>
+        }
+      </ul>
+
+      <aside class="resumen" aria-label="Resumen del pedido">
+        <h2>Resumen</h2>
+
+        <dl class="resumen__lineas">
+          <div class="resumen__linea">
+            <dt>Subtotal</dt>
+            <dd>{{ formatearPrecio(subtotal()) }}</dd>
+          </div>
+          <div class="resumen__linea">
+            <dt>Envío</dt>
+            <dd>{{ formatearPrecio(envio()) }}</dd>
+          </div>
+          <div class="resumen__linea resumen__linea--total">
+            <dt>Total</dt>
+            <dd>{{ formatearPrecio(total()) }}</dd>
+          </div>
+        </dl>
+
+        <button type="button" class="resumen__comprar">Finalizar compra</button>
+        <button type="button" class="resumen__vaciar" (click)="vaciarCarrito()">Vaciar carrito</button>
+      </aside>
     </div>
-  </div>
-</div>
+  }
+</section>

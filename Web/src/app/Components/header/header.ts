@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { CarritoService } from '../../Services/carrito.service/carrito.service';
 
 
 @Component({
@@ -18,4 +19,6 @@ export class Header {
   closeStoreMenu(): void {
     this.isStoreMenuOpen = false;
   }
+
+  readonly carrito = inject(CarritoService);
 }

@@ -26,6 +26,9 @@
             </ul>
         </div>
         <div class="car">
+            @if (carrito.unidades() > 0) {
+                <span class="header__contador">{{ carrito.unidades() }}</span>
+            }
             <a routerLink="carrito">Carrito</a>
         </div>
     </div>

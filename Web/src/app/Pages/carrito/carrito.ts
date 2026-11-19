@@ -1,60 +1,43 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-
-interface ProductoCarrito {
-  id: number;
-  nombre: string;
-  precio: number;
-  cantidad: number;
-  imagen?: string;
-}
+import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { CarritoService } from '../../Services/carrito.service/carrito.service';
 
 @Component({
+  imports: [RouterLink],
   selector: 'app-carrito',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
+  styleUrl: './carrito.css',
   templateUrl: './carrito.html',
-  styleUrls: ['./carrito.css']
 })
 export class Carrito {
-  productos: ProductoCarrito[] = [
-    { id: 1, nombre: 'Proteina', precio: 45000, cantidad: 1, imagen: 'https://via.placeholder.com/80' },
-    { id: 2, nombre: 'Creatina', precio: 89000, cantidad: 2, imagen: 'https://via.placeholder.com/80' },
-    { id: 3, nombre: 'Straps', precio: 150000, cantidad: 1, imagen: 'https://via.placeholder.com/80' }
-  ];
+  private readonly carrito = inject(CarritoService);
 
-  aumentarCantidad(producto: ProductoCarrito): void {
-    producto.cantidad++;
+  readonly productos = this.carrito.productos;
+  readonly unidades = this.carrito.unidades;
+  readonly subtotal = this.carrito.subtotal;
+  readonly envio = this.carrito.envio;
+  readonly total = this.carrito.total;
+
+  aumentarCantidad(id: string): void {
+    this.carrito.cambiarCantidad(id, 1);
   }
 
-  disminuirCantidad(producto: ProductoCarrito): void {
-    if (producto.cantidad > 1) {
-      producto.cantidad--;
-    }
+  disminuirCantidad(id: string): void {
+    this.carrito.cambiarCantidad(id, -1);
   }
 
-  eliminarProducto(id: number): void {
-    this.productos = this.productos.filter(p => p.id !== id);
-  }
-
-  get subtotal(): number {
-    return this.productos.reduce((total, p) => total + p.precio * p.cantidad, 0);
-  }
-
-  get envio(): number {
-    return this.productos.length > 0 ? 10000 : 0;
-  }
-
-  get total(): number {
-    return this.subtotal + this.envio;
+  eliminarProducto(id: string): void {
+    this.carrito.eliminar(id);
   }
 
   vaciarCarrito(): void {
-    this.productos = [];
+    this.carrito.vaciar();
   }
 
   formatearPrecio(valor: number): string {
-    return valor.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      maximumFractionDigits: 0,
+    }).format(valor);
   }
 }

@@ -1,5 +1,6 @@
-import { Component, computed, output, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { CarritoService } from '../../Services/carrito.service/carrito.service';
 
 export type CategoriaProteina = 'Whey' | 'Aislada' | 'Caseína' | 'Vegetal';
 export type Filtro = 'Todas' | CategoriaProteina;
@@ -25,6 +26,8 @@ export interface Proteina {
   templateUrl: './proteinas.html',
 })
 export class Proteinas {
+  private readonly carrito = inject(CarritoService);
+
   readonly filtros: Filtro[] = ['Todas', 'Whey', 'Aislada', 'Caseína', 'Vegetal'];
 
   private readonly productos = signal<Proteina[]>([
@@ -89,15 +92,17 @@ export class Proteinas {
       : this.productos().filter((p) => p.categoria === filtro);
   });
 
-  /** Se emite al pulsar "Añadir"; el padre (o un servicio de carrito) lo recibe. */
-  readonly agregar = output<Proteina>();
-
   seleccionarFiltro(filtro: Filtro): void {
     this.filtroActivo.set(filtro);
   }
 
   agregarAlCarrito(producto: Proteina): void {
-    this.agregar.emit(producto);
+    this.carrito.agregar({
+      id: 'proteinas-' + producto.id,
+      nombre: producto.nombre,
+      precio: producto.precio,
+      imagen: producto.imagen,
+    });
   }
 
   formatearPrecio(valor: number): string {

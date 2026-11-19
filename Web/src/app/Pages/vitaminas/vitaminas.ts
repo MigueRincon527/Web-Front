@@ -1,5 +1,6 @@
-import { Component, computed, output, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { CarritoService } from '../../Services/carrito.service/carrito.service';
 
 export type CategoriaVitamina = 'Multivitamínicos' | 'Omega 3' | 'Vitamina D' | 'Minerales';
 export type FiltroVitamina = 'Todas' | CategoriaVitamina;
@@ -25,6 +26,8 @@ export interface Vitamina {
   templateUrl: './vitaminas.html',
 })
 export class Vitaminas {
+  private readonly carrito = inject(CarritoService);
+
   readonly filtros: FiltroVitamina[] = ['Todas', 'Multivitamínicos', 'Omega 3', 'Vitamina D', 'Minerales'];
 
   private readonly productos = signal<Vitamina[]>([
@@ -89,15 +92,17 @@ export class Vitaminas {
       : this.productos().filter((p) => p.categoria === filtro);
   });
 
-  /** Se emite al pulsar "Añadir"; el padre (o un servicio de carrito) lo recibe. */
-  readonly agregar = output<Vitamina>();
-
   seleccionarFiltro(filtro: FiltroVitamina): void {
     this.filtroActivo.set(filtro);
   }
 
   agregarAlCarrito(producto: Vitamina): void {
-    this.agregar.emit(producto);
+    this.carrito.agregar({
+      id: 'vitaminas-' + producto.id,
+      nombre: producto.nombre,
+      precio: producto.precio,
+      imagen: producto.imagen,
+    });
   }
 
   formatearPrecio(valor: number): string {

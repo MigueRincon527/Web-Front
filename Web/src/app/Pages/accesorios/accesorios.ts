@@ -1,5 +1,6 @@
-import { Component, computed, output, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { CarritoService } from '../../Services/carrito.service/carrito.service';
 
 export type CategoriaAccesorio = 'Shakers' | 'Cinturones' | 'Agarre';
 export type FiltroAccesorio = 'Todos' | CategoriaAccesorio;
@@ -24,6 +25,8 @@ export interface Accesorio {
   templateUrl: './accesorios.html',
 })
 export class Accesorios {
+  private readonly carrito = inject(CarritoService);
+
   readonly filtros: FiltroAccesorio[] = ['Todos', 'Shakers', 'Cinturones', 'Agarre'];
 
   private readonly productos = signal<Accesorio[]>([
@@ -95,15 +98,17 @@ export class Accesorios {
       : this.productos().filter((p) => p.categoria === filtro);
   });
 
-  /** Se emite al pulsar "Añadir"; el padre (o un servicio de carrito) lo recibe. */
-  readonly agregar = output<Accesorio>();
-
   seleccionarFiltro(filtro: FiltroAccesorio): void {
     this.filtroActivo.set(filtro);
   }
 
   agregarAlCarrito(producto: Accesorio): void {
-    this.agregar.emit(producto);
+    this.carrito.agregar({
+      id: 'accesorios-' + producto.id,
+      nombre: producto.nombre,
+      precio: producto.precio,
+      imagen: producto.imagen,
+    });
   }
 
   formatearPrecio(valor: number): string {
