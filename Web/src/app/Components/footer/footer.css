@@ -72,3 +72,8 @@ a:hover {
     color: #bfff00;
     pointer-events: auto;
 }
+
+.derechos {
+    display: flex;
+    align-items: center;
+}
