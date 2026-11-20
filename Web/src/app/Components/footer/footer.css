@@ -57,7 +57,7 @@ span {
 }
 
 .copyright {
-    display: flex;
+    display: flex;/*ok*/
     align-items: center;
     text-align: center;
     font-size: 0.8rem;
