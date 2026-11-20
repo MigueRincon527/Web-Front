@@ -23,7 +23,7 @@ export class Auth {
 
   saveToken(token : string, role : string) {
     localStorage.setItem('token', token);
-    localStorage.setItem('role', role);
+    localStorage.setItem('role', role.trim().toLowerCase());
   }
 
   getToken() {
@@ -41,7 +41,7 @@ export class Auth {
 
   isAdmin() {
     const role = localStorage.getItem('role');
-    return role === 'admin'
+    return role?.trim().toLowerCase() === 'admin';
   }
 
   getRole() {

@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CarritoService } from '../../Services/carrito.service/carrito.service';
 import { Auth } from '../../Services/auth/auth';
 
@@ -13,6 +13,7 @@ import { Auth } from '../../Services/auth/auth';
 export class Header {
   isStoreMenuOpen = false;
   readonly auth = inject(Auth);
+  private readonly router = inject(Router);
 
   toggleStoreMenu(): void {
     this.isStoreMenuOpen = !this.isStoreMenuOpen;
@@ -20,6 +21,12 @@ export class Header {
 
   closeStoreMenu(): void {
     this.isStoreMenuOpen = false;
+  }
+
+  salir(): void {
+    this.auth.logout();
+    this.closeStoreMenu();
+    this.router.navigate(['/home']);
   }
 
   readonly carrito = inject(CarritoService);

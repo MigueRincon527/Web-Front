@@ -64,7 +64,7 @@ export class Login {
         this.cargando = false;
 
         const token = response.token;
-        const rol = response.usuario.rol; // <- corregido
+        const rol = String(response.usuario.rol ?? '').trim().toLowerCase();
 
         this.authService.saveToken(token, rol);
 
