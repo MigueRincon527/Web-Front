@@ -1,0 +1,26 @@
+:host { --lima:#bfff00; --superficie:#333; --borde:#4f4e4e; --texto-suave:#919090; display:block; }
+.form-container { min-height:100vh; display:flex; justify-content:center; padding:40px 24px 60px; box-sizing:border-box; }
+.form-card { width:min(620px,100%); height:max-content; border:1px solid var(--borde); border-radius:20px; padding:32px; background:var(--superficie); box-sizing:border-box; }
+.form-header { margin-bottom:24px; text-align:center; }
+.form-header h1 { margin:0 0 8px; }
+.form-header p { margin:0 auto; color:var(--texto-suave); }
+.mensaje-error,.mensaje-exito { margin-bottom:16px; border-radius:12px; padding:12px 16px; }
+.mensaje-error { border:1px solid #7d3b3b; background:#4a2929; }
+.mensaje-exito { border:1px solid #4f7d45; background:#2d4a29; }
+.cargando { padding:30px; text-align:center; color:var(--texto-suave); }
+.form-card form { width:100%; height:auto; margin:0; padding:0; border:0; border-radius:0; background:transparent; gap:0; }
+.campo-form { width:100%; margin-bottom:16px; }
+.campo-form label { margin-bottom:6px; color:var(--texto-suave); }
+.campo-form input,.campo-form textarea,.campo-form select { box-sizing:border-box; width:100%; border:1px solid var(--borde); border-radius:50px; background:#222; }
+.campo-form textarea { min-height:100px; border-radius:16px; resize:vertical; }
+.campo-form input:focus,.campo-form textarea:focus,.campo-form select:focus { outline:0; border-color:var(--lima); }
+.fila-doble { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.campo-checkbox { margin-bottom:16px; }
+.checkbox-label { display:flex; align-items:center; gap:8px; color:var(--texto-suave); cursor:pointer; }
+.checkbox-label input { accent-color:var(--lima); }
+.botones-form { display:flex; gap:10px; width:100%; }
+.btn-cancelar,.btn-guardar { flex:1; height:46px; border-radius:50px; cursor:pointer; }
+.btn-cancelar { border:1px solid var(--borde); background:transparent; color:#fff; }
+.btn-guardar { border:0; background:var(--lima); color:#000; }
+.btn-guardar:disabled { cursor:not-allowed; opacity:.65; }
+@media(max-width:600px){ .form-container{padding-inline:16px}.form-card{padding:24px 20px}.fila-doble{grid-template-columns:1fr}.botones-form{flex-direction:column}}

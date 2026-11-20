@@ -1,69 +1,177 @@
+:host {
+    --lima: #bfff00;
+    --superficie: #333;
+    --superficie-oscura: #222;
+    --borde: #4f4e4e;
+    --texto-suave: #919090;
+    display: block;
+}
+
 .login {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     min-height: 100vh;
-}
-
-.rich p {
-    width: 100%;
-    text-align: center;
-    color: #fff;
-    font-size: 25px;
-    margin-bottom: 5px;
-}
-
-.rich label {
-    color: #787777;
-    font-size: 15px;
-    margin-bottom: 5px;
-}
-
-form {
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    border: 1px solid #4f4e4e;
+    padding: 40px 20px;
+    background: #1a1a1a;
+}
+
+.login__marca h1 {
+    margin: 0 0 20px;
+    text-align: center;
+    font-size: clamp(2.75rem, 7vw, 4.25rem);
+}
+
+.login__encabezado {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.login__encabezado p {
+    max-width: none;
+    margin: 0 0 6px;
+    font-family: var(--fuente-titulos);
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.login__encabezado span {
+    color: var(--texto-suave);
+    font-size: .9rem;
+}
+
+.login__formulario {
+    width: min(360px, 100%);
+    height: auto;
+    box-sizing: border-box;
+    gap: 16px;
+    margin: 0;
+    padding: 32px;
+    border: 1px solid var(--borde);
     border-radius: 20px;
-    padding: 20px;
-    padding-top: 50px;
-    width: 300px;
-    height: 230px;
-    background-color: #333;
-    margin-top: 20px;
+    background: var(--superficie);
 }
 
-form input {
+.login__campo {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #4f4e4e;
-    border-radius: 50px;
-    background-color: #222;
-    color: #fff;
 }
 
-form button {
-    width: 105%;
-    padding: 10px;
-    border: none;
+.login__campo label {
+    margin: 0 0 7px;
+    color: var(--texto-suave);
+}
+
+.login__campo input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 46px;
+    border: 1px solid var(--borde);
     border-radius: 50px;
-    background-color: #bfff00;
-    color: #000000;
+    background: var(--superficie-oscura);
+}
+
+.login__campo input:focus {
+    outline: 2px solid var(--lima);
+    outline-offset: 2px;
+}
+
+.login__password {
+    position: relative;
+    width: 100%;
+}
+
+.login__password input {
+    padding-right: 46px;
+}
+
+.login__ver-password {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    transform: translateY(-50%);
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--lima);
     cursor: pointer;
 }
 
-form button:hover {
-    background-color: #a6e600;
-    color: #ffffff;
+.login__ver-password svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
 }
 
-form label {
-    color: #919090;
-    font-weight: bold;
-    margin-bottom: -5px;
+.login__ver-password:focus-visible {
+    outline: 2px solid var(--lima);
+    outline-offset: 1px;
+}
+
+.login__ver-password:disabled {
+    cursor: not-allowed;
+    opacity: .6;
+}
+
+.login__recordar {
+    display: flex;
     align-self: flex-start;
-    font-size: 12px;
+    align-items: center;
+    gap: 8px;
+    color: var(--texto-suave);
+    font-size: .85rem;
+    cursor: pointer;
+}
+
+.login__recordar input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--lima);
+}
+
+.login__error {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #7d3b3b;
+    border-radius: 10px;
+    padding: 9px 12px;
+    background: #4a2929;
+    color: #ffaaaa;
+    font-size: .85rem;
+}
+
+.login__submit {
+    width: 100%;
+    height: 46px;
+    border: 0;
+    border-radius: 50px;
+    background: var(--lima);
+    color: #000;
+}
+
+.login__submit:hover:not(:disabled) {
+    background: #a6e600;
+}
+
+.login__submit:disabled {
+    cursor: not-allowed;
+    opacity: .65;
+}
+
+.login__registro {
+    max-width: none;
+    margin: 0;
+    color: var(--texto-suave);
+    text-align: center;
+    font-size: .85rem;
 }

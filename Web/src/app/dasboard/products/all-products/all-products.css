@@ -1,0 +1,25 @@
+:host { --lima:#bfff00; --superficie:#333; --superficie-oscura:#222; --borde:#4f4e4e; --texto-suave:#919090; display:block; }
+.productos-container { max-width:1200px; min-height:100vh; margin:0 auto; padding:40px 24px 60px; box-sizing:border-box; }
+.productos-header { display:flex; align-items:center; justify-content:space-between; gap:20px; margin-bottom:28px; }
+.productos-header h1 { margin:0 0 8px; }
+.productos-header p { margin:0; color:var(--texto-suave); }
+.btn-nuevo { border-radius:50px; padding:12px 20px; background:var(--lima); color:#000; font-family:var(--fuente-titulos); font-weight:700; text-transform:uppercase; }
+.btn-nuevo:hover { background:#a6e600; }
+.mensaje-error { margin-bottom:18px; border:1px solid #7d3b3b; border-radius:12px; padding:12px 16px; background:#4a2929; }
+.cargando,.sin-productos { padding:40px 20px; border:1px solid var(--borde); border-radius:20px; background:var(--superficie); text-align:center; color:var(--texto-suave); }
+.grid-productos { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:24px; }
+.tarjeta-producto { position:relative; display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--borde); border-radius:20px; background:var(--superficie); transition:border-color .2s,transform .2s; }
+.tarjeta-producto:hover { border-color:var(--lima); transform:translateY(-4px); }
+.tarjeta-producto>img { width:100%; height:220px; object-fit:cover; background:var(--superficie-oscura); }
+.tarjeta-contenido { display:flex; flex:1; flex-direction:column; gap:10px; padding:20px; }
+.etiqueta-categoria { width:max-content; border-radius:50px; padding:4px 10px; background:var(--lima); color:#000; font-size:.75rem; font-weight:700; }
+.tarjeta-contenido h3 { margin:4px 0 0; }
+.descripcion-corta { flex:1; margin:0; color:var(--texto-suave); font-size:.9rem; }
+.tarjeta-footer { display:flex; align-items:center; justify-content:space-between; gap:10px; padding-top:14px; border-top:1px solid var(--borde); }
+.precio { font-family:var(--fuente-titulos); font-size:1.55rem; font-weight:800; }
+.btn-ver,.btn-editar,.btn-eliminar { border-radius:50px; padding:9px 14px; font-family:var(--fuente-titulos); font-weight:700; text-transform:uppercase; cursor:pointer; }
+.btn-ver,.btn-editar { background:var(--lima); color:#000; }
+.acciones-admin { display:flex; gap:8px; padding-top:4px; }
+.btn-eliminar { border:1px solid #8a4a4a; background:transparent; color:#ff8c8c; }
+.etiqueta-agotado { width:max-content; border-radius:50px; padding:4px 10px; background:#642e2e; color:#ff9b9b; font-size:.75rem; font-weight:700; }
+@media(max-width:600px){ .productos-container{padding-inline:16px} .productos-header{align-items:flex-start;flex-direction:column} }

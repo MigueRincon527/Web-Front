@@ -1,0 +1,20 @@
+:host { --lima:#bfff00; --superficie:#333; --borde:#4f4e4e; --texto-suave:#919090; display:block; }
+.editar-container { min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:40px 24px 60px; box-sizing:border-box; }
+.editar-card { width:min(520px,100%); border:1px solid var(--borde); border-radius:20px; padding:32px; background:var(--superficie); }
+.editar-header { margin-bottom:24px; text-align:center; }
+.editar-header h1 { margin:0 0 8px; }
+.editar-header p { margin:0; color:var(--texto-suave); }
+.mensaje-error,.mensaje-exito { margin-bottom:16px; border-radius:12px; padding:12px 16px; }
+.mensaje-error { border:1px solid #7d3b3b; background:#4a2929; }
+.mensaje-exito { border:1px solid #4f7d45; background:#2d4a29; }
+.cargando { padding:30px; text-align:center; color:var(--texto-suave); }
+.editar-card form { width:100%; height:auto; margin:0; padding:0; border:0; border-radius:0; background:transparent; gap:0; }
+.campo-form { width:100%; margin-bottom:16px; }
+.campo-form label { margin-bottom:6px; color:var(--texto-suave); }
+.campo-form input,.campo-form select { box-sizing:border-box; height:46px; border:1px solid var(--borde); border-radius:50px; background:#222; }
+.campo-form input:focus,.campo-form select:focus { outline:0; border-color:var(--lima); }
+.botones-form { display:flex; gap:10px; width:100%; margin-top:8px; }
+.btn-cancelar,.btn-guardar { flex:1; height:46px; border-radius:50px; cursor:pointer; }
+.btn-cancelar { border:1px solid var(--borde); background:transparent; color:#fff; }
+.btn-guardar { border:0; background:var(--lima); color:#000; }
+.btn-guardar:disabled { cursor:not-allowed; opacity:.65; }

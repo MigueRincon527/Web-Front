@@ -21,6 +21,9 @@
                     </ul>
                     }
                 </li>
+                @if (auth.isAdmin()) {
+                <li class="btn"><a routerLink="dashboard">Dashboard</a></li>
+                }
                 <li><a routerLink="login">Ingresar</a></li>
                 <li class="btn"><a routerLink="register">Registrarse</a></li>
             </ul>

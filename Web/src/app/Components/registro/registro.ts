@@ -1,10 +1,114 @@
-import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router'; 
-
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Auth } from '../../Services/auth/auth';
 @Component({
-  imports: [RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [RouterLink, CommonModule, FormsModule],
   selector: 'app-registro',
   styleUrl: './registro.css',
   templateUrl: './registro.html',
 })
-export class Registro {}
+export class Registro {
+  nombre: string = '';
+  email: string = '';
+  password: string = '';
+  confirmarPassword: string = '';
+  aceptaTerminos: boolean = false;
+  mostrarPassword: boolean = false;
+
+  cargando: boolean = false;
+  errorMensaje: string = '';
+  exitoMensaje: string = '';
+
+  private router = inject(Router);
+  private authService = inject(Auth);
+
+  togglePassword(): void {
+    this.mostrarPassword = !this.mostrarPassword;
+  }
+
+  get fortalezaPassword(): { nivel: number; texto: string; color: string } {
+    const pass = this.password;
+    if (!pass) return { nivel: 0, texto: '', color: '#eee' };
+
+    let puntos = 0;
+    if (pass.length >= 6) puntos++;
+    if (pass.length >= 10) puntos++;
+    if (/[A-Z]/.test(pass) && /[0-9]/.test(pass)) puntos++;
+    if (/[^A-Za-z0-9]/.test(pass)) puntos++;
+
+    if (puntos <= 1) return { nivel: 1, texto: 'Débil', color: '#e74c3c' };
+    if (puntos <= 2) return { nivel: 2, texto: 'Media', color: '#f39c12' };
+    if (puntos <= 3) return { nivel: 3, texto: 'Buena', color: '#3498db' };
+    return { nivel: 4, texto: 'Fuerte', color: '#27ae60' };
+  }
+
+  validarFormulario(): boolean {
+    this.errorMensaje = '';
+
+    if (!this.nombre.trim() || !this.email.trim() || !this.password.trim() || !this.confirmarPassword.trim()) {
+      this.errorMensaje = 'Por favor completa todos los campos.';
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.email)) {
+      this.errorMensaje = 'Ingresa un correo electrónico válido.';
+      return false;
+    }
+
+    if (this.password.length < 6) {
+      this.errorMensaje = 'La contraseña debe tener al menos 6 caracteres.';
+      return false;
+    }
+
+    if (this.password !== this.confirmarPassword) {
+      this.errorMensaje = 'Las contraseñas no coinciden.';
+      return false;
+    }
+
+    if (!this.aceptaTerminos) {
+      this.errorMensaje = 'Debes aceptar los términos y condiciones.';
+      return false;
+    }
+
+    return true;
+  }
+
+  registrar(): void {
+    if (!this.validarFormulario()) return;
+
+    this.cargando = true;
+    this.errorMensaje = '';
+    this.exitoMensaje = '';
+
+    const nuevoUsuario = {
+      nombre: this.nombre,
+      email: this.email,
+      password: this.password
+    };
+
+    this.authService.register(nuevoUsuario).subscribe({
+      next: (response: any) => {
+        this.cargando = false;
+
+        const token = response.token;
+        const rol = response.usuario.rol;
+
+        this.authService.saveToken(token, rol);
+        this.exitoMensaje = `¡Registro exitoso! Bienvenido, ${response.usuario.nombre}.`;
+
+        setTimeout(() => this.router.navigate(['/home']), 1500);
+      },
+      error: (err) => {
+        this.cargando = false;
+        this.errorMensaje = err.error?.mensaje || 'Error al registrar usuario. Intenta de nuevo.';
+      }
+    });
+  }
+
+  registrarConGoogle(): void {
+    console.log('Registro con Google');
+  }
+}
