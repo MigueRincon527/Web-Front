@@ -12,8 +12,12 @@
     <a routerLink="/home" class="btn-volver">← Volver al inicio</a>
 
     <div class="info-contenido">
-      <div class="info-imagen">
-        <img [src]="producto.imagen" [alt]="producto.nombre" />
+      <div class="info-imagen" *ngIf="producto.imagenes?.length">
+        <img
+          *ngFor="let imagen of producto.imagenes"
+          [src]="imagen"
+          [alt]="producto.nombre"
+        />
       </div>
 
       <div class="info-detalles">

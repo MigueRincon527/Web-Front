@@ -11,7 +11,7 @@ import { Auth } from '../../Services/auth/auth';
   templateUrl: './login.html',
 })
 export class Login {
-  email: string = '';
+  identificador: string = '';
   password: string = '';
   recordarme: boolean = false;
   mostrarPassword: boolean = false;
@@ -29,14 +29,8 @@ export class Login {
   validarFormulario(): boolean {
     this.errorMensaje = '';
 
-    if (!this.email.trim() || !this.password.trim()) {
+    if (!this.identificador.trim() || !this.password.trim()) {
       this.errorMensaje = 'Por favor completa todos los campos.';
-      return false;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(this.email)) {
-      this.errorMensaje = 'Ingresa un correo electrónico válido.';
       return false;
     }
 
@@ -55,7 +49,9 @@ export class Login {
     this.errorMensaje = '';
 
     const credenciales = {
-      email: this.email,
+      identificador: this.identificador.trim(),
+      email: this.identificador.trim(),
+      nombre: this.identificador.trim(),
       password: this.password
     };
 

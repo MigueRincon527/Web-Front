@@ -21,7 +21,7 @@ export class UpdateProduct implements OnInit {
   productoId: string = '';
   nombre: string = '';
   descripcion: string = '';
-  imagen: string = '';
+  imagenesTexto: string = '';
   precio: number | null = null;
   cantidad: number | null = null;
   categoria: string = '';
@@ -51,7 +51,7 @@ export class UpdateProduct implements OnInit {
         const p = response.datos;
         this.nombre = p.nombre;
         this.descripcion = p.descripcion;
-        this.imagen = p.imagen;
+        this.imagenesTexto = Array.isArray(p.imagenes) ? p.imagenes.join('\n') : '';
         this.precio = p.precio;
         this.cantidad = p.cantidad;
         this.categoria = p.categoria;
@@ -74,7 +74,10 @@ export class UpdateProduct implements OnInit {
     const datosActualizados: any = {
       nombre: this.nombre,
       descripcion: this.descripcion,
-      imagen: this.imagen,
+      imagenes: this.imagenesTexto
+        .split('\n')
+        .map((imagen) => imagen.trim())
+        .filter((imagen) => imagen.length > 0),
       precio: this.precio,
       cantidad: this.cantidad,
       categoria: this.categoria,

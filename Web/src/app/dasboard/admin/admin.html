@@ -114,13 +114,12 @@
 
       <div class="lista-productos-top">
         <div class="producto-top-item" *ngFor="let producto of productosTop">
-          <img [src]="producto.imagen" [alt]="producto.nombre" />
           <div class="producto-top-info">
             <p class="producto-top-nombre">{{ producto.nombre }}</p>
             <p class="producto-top-categoria">{{ producto.categoria }}</p>
           </div>
           <div class="producto-top-datos">
-            <p class="producto-top-unidades">{{ producto.unidadesVendidas }} vendidos</p>
+            <p class="producto-top-unidades">{{ producto.unidadesVendidas }} disponibles</p>
             <p class="producto-top-ingresos">{{ formatearPrecio(producto.ingresos) }}</p>
           </div>
         </div>

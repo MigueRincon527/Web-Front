@@ -47,8 +47,14 @@
       </div>
 
       <div class="campo-form">
-        <label for="imagen">URL de imagen</label>
-        <input type="text" id="imagen" name="imagen" [(ngModel)]="imagen" placeholder="https://..." />
+        <label for="imagenes">URLs de imágenes</label>
+        <textarea
+          id="imagenes"
+          name="imagenes"
+          [(ngModel)]="imagenesTexto"
+          rows="3"
+          placeholder="Una URL por línea"
+        ></textarea>
       </div>
 
       <div class="campo-form">

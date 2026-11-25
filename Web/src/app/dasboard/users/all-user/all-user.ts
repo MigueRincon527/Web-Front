@@ -25,7 +25,7 @@ export class AllUser implements OnInit {
     this.cargando = true;
     this.usuariosService.getUsuarios().subscribe({
       next: (data: any) => {
-        this.usuarios = data;
+        this.usuarios = Array.isArray(data) ? data : (data.datos ?? data.usuarios ?? []);
         this.cargando = false;
       },
       error: (err) => {

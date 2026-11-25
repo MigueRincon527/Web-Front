@@ -19,7 +19,7 @@ export class NewProduct {
 
   nombre: string = '';
   descripcion: string = '';
-  imagen: string = '';
+  imagenesTexto: string = '';
   precio: number | null = null;
   cantidad: number | null = null;
   categoria: string = '';
@@ -33,7 +33,7 @@ export class NewProduct {
   validarFormulario(): boolean {
     this.errorMensaje = '';
 
-    if (!this.nombre.trim() || !this.descripcion.trim() || !this.imagen.trim() || !this.categoria) {
+    if (!this.nombre.trim() || !this.descripcion.trim() || !this.categoria) {
       this.errorMensaje = 'Completa todos los campos obligatorios.';
       return false;
     }
@@ -60,10 +60,14 @@ export class NewProduct {
     const nuevoProducto: any = {
       nombre: this.nombre,
       descripcion: this.descripcion,
-      imagen: this.imagen,
+      imagenes: this.imagenesTexto
+        .split('\n')
+        .map((imagen) => imagen.trim())
+        .filter((imagen) => imagen.length > 0),
       precio: this.precio,
       cantidad: this.cantidad,
-      categoria: this.categoria
+      categoria: this.categoria,
+      disponible: this.disponible
     };
 
     // sku es opcional (unique + sparse en el modelo), solo lo mandamos si tiene valor

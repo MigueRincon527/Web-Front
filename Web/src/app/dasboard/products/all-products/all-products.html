@@ -19,7 +19,11 @@
 
   <div class="grid-productos" *ngIf="!cargando && productos.length > 0">
     <div class="tarjeta-producto" *ngFor="let producto of productos">
-      <img [src]="producto.imagen" [alt]="producto.nombre" />
+      <img
+        *ngIf="producto.imagenes?.length"
+        [src]="producto.imagenes[0]"
+        [alt]="producto.nombre"
+      />
 
       <div class="tarjeta-contenido">
         <span class="etiqueta-categoria">{{ producto.categoria }}</span>

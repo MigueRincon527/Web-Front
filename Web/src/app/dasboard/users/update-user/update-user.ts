@@ -19,7 +19,7 @@ export class UpdateUser implements OnInit {
   usuarioId: string = '';
   nombre: string = '';
   email: string = '';
-  role: string = '';
+  rol: string = '';
 
   cargando: boolean = true;
   guardando: boolean = false;
@@ -43,7 +43,7 @@ export class UpdateUser implements OnInit {
       next: (data: any) => {
         this.nombre = data.nombre;
         this.email = data.email;
-        this.role = data.role;
+        this.rol = data.rol ?? data.usuario?.rol ?? '';
         this.cargando = false;
       },
       error: (err) => {
@@ -61,7 +61,7 @@ export class UpdateUser implements OnInit {
     const datosActualizados = {
       nombre: this.nombre,
       email: this.email,
-      role: this.role
+      rol: this.rol
     };
 
     this.usuariosService.actualizarUsuario(this.usuarioId, datosActualizados).subscribe({

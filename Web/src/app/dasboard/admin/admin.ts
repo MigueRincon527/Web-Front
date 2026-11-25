@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Usuarios } from '../../Services/usuarios/usuarios';
+import { Productos } from '../../Services/productos/productos';
 
 interface MetricaCard {
   titulo: string;
@@ -23,7 +25,6 @@ interface ProductoTop {
   id: number;
   nombre: string;
   categoria: string;
-  imagen: string;
   unidadesVendidas: number;
   ingresos: number;
 }
@@ -42,14 +43,17 @@ interface AlertaStock {
   templateUrl: './admin.html',
   styleUrls: ['./admin.css']
 })
-export class Dashboard {
+export class Dashboard implements OnInit {
+  private usuariosService = inject(Usuarios);
+  private productosService = inject(Productos);
+
   rangoSeleccionado: string = '7dias';
 
   metricas: MetricaCard[] = [
-    { titulo: 'Ventas totales', valor: '$12.480.000', cambio: 8.4, icono: '💰', color: '#ff6b35' },
-    { titulo: 'Pedidos', valor: '284', cambio: 5.2, icono: '📦', color: '#3498db' },
-    { titulo: 'Clientes nuevos', valor: '67', cambio: -2.1, icono: '👤', color: '#27ae60' },
-    { titulo: 'Ticket promedio', valor: '$139.500', cambio: 3.6, icono: '🧾', color: '#9b59b6' }
+    { titulo: 'Ventas totales', valor: 'Sin datos', cambio: 0, icono: '💰', color: '#ff6b35' },
+    { titulo: 'Pedidos', valor: 'Sin datos', cambio: 0, icono: '📦', color: '#3498db' },
+    { titulo: 'Usuarios registrados', valor: '0', cambio: 0, icono: '👤', color: '#27ae60' },
+    { titulo: 'Productos', valor: '0', cambio: 0, icono: '🧾', color: '#9b59b6' }
   ];
 
   pedidosRecientes: Pedido[] = [
@@ -61,18 +65,63 @@ export class Dashboard {
     { id: '#ORD-1037', cliente: 'Paula Ramírez', fecha: '07 sep 2026', productos: 2, total: 235000, estado: 'Enviado' }
   ];
 
-  productosTop: ProductoTop[] = [
-    { id: 1, nombre: 'Whey Protein Gold Standard 2kg', categoria: 'Proteínas', imagen: 'https://via.placeholder.com/60?text=WP', unidadesVendidas: 142, ingresos: 26838000 },
-    { id: 2, nombre: 'Creatina Monohidratada 500g', categoria: 'Creatinas', imagen: 'https://via.placeholder.com/60?text=CR', unidadesVendidas: 118, ingresos: 11210000 },
-    { id: 3, nombre: 'Pre-Entreno Explosive 300g', categoria: 'Pre-entrenos', imagen: 'https://via.placeholder.com/60?text=PE', unidadesVendidas: 95, ingresos: 12350000 },
-    { id: 4, nombre: 'Shaker Premium 700ml', categoria: 'Accesorios', imagen: 'https://via.placeholder.com/60?text=SH', unidadesVendidas: 87, ingresos: 3045000 }
-  ];
+  productosTop: ProductoTop[] = [];
 
-  alertasStock: AlertaStock[] = [
-    { id: 1, nombre: 'Caseína Micelar 900g', stock: 4, stockMinimo: 10 },
-    { id: 2, nombre: 'Pre-Entreno Extreme Pump 250g', stock: 2, stockMinimo: 8 },
-    { id: 3, nombre: 'Guantes de Entrenamiento Pro', stock: 6, stockMinimo: 15 }
-  ];
+  alertasStock: AlertaStock[] = [];
+
+  ngOnInit(): void {
+    this.cargarUsuarios();
+    this.cargarProductos();
+  }
+
+  private cargarUsuarios(): void {
+    this.usuariosService.getUsuarios().subscribe({
+      next: (response: any) => {
+        const usuarios = Array.isArray(response)
+          ? response
+          : (response.datos ?? response.usuarios ?? []);
+        this.metricas[2].valor = String(usuarios.length);
+      },
+      error: () => {
+        this.metricas[2].valor = 'Error';
+      }
+    });
+  }
+
+  private cargarProductos(): void {
+    this.productosService.getProductos().subscribe({
+      next: (response: any) => {
+        const productos = Array.isArray(response)
+          ? response
+          : (response.datos ?? []);
+        this.metricas[3].valor = String(productos.length);
+
+        this.alertasStock = productos
+          .filter((producto: any) => Number(producto.cantidad ?? 0) < 10)
+          .map((producto: any, index: number) => ({
+            id: index + 1,
+            nombre: producto.nombre,
+            stock: Number(producto.cantidad ?? 0),
+            stockMinimo: 10
+          }));
+
+        this.productosTop = productos
+          .slice()
+          .sort((a: any, b: any) => Number(b.cantidad ?? 0) - Number(a.cantidad ?? 0))
+          .slice(0, 4)
+          .map((producto: any, index: number) => ({
+            id: index + 1,
+            nombre: producto.nombre,
+            categoria: producto.categoria ?? 'Sin categoría',
+            unidadesVendidas: Number(producto.cantidad ?? 0),
+            ingresos: Number(producto.precio ?? 0)
+          }));
+      },
+      error: () => {
+        this.metricas[3].valor = 'Error';
+      }
+    });
+  }
 
   cambiarRango(rango: string): void {
     this.rangoSeleccionado = rango;
