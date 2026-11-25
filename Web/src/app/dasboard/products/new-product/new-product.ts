@@ -1,8 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Productos } from '../../../Services/productos/productos';
+import { finalize } from 'rxjs';
+import { NuevoProducto, ProductoBaseDatos, Productos } from '../../../Services/productos/productos';
+import { CatalogoService } from '../../../Services/catalogo.service/catalogo.service';
 
 @Component({
   selector: 'app-new-product',
@@ -13,16 +15,18 @@ import { Productos } from '../../../Services/productos/productos';
 })
 export class NewProduct {
   private productosService = inject(Productos);
+  private catalogoService = inject(CatalogoService);
   private router = inject(Router);
+  private changeDetector = inject(ChangeDetectorRef);
 
-  categorias: string[] = ['Proteina', 'creatina', 'pre-entrenos', 'accesorios'];
+  categorias: ProductoBaseDatos['categoria'][] = ['Proteina', 'creatina', 'pre-entrenos', 'accesorios'];
 
   nombre: string = '';
   descripcion: string = '';
   imagenesTexto: string = '';
   precio: number | null = null;
   cantidad: number | null = null;
-  categoria: string = '';
+  categoria: ProductoBaseDatos['categoria'] | '' = '';
   sku: string = '';
   disponible: boolean = true;
 
@@ -33,17 +37,22 @@ export class NewProduct {
   validarFormulario(): boolean {
     this.errorMensaje = '';
 
-    if (!this.nombre.trim() || !this.descripcion.trim() || !this.categoria) {
+    if (
+      !this.nombre.trim() ||
+      !this.descripcion.trim() ||
+      !this.categoria ||
+      !this.categorias.includes(this.categoria)
+    ) {
       this.errorMensaje = 'Completa todos los campos obligatorios.';
       return false;
     }
 
-    if (this.precio === null || this.precio < 0) {
+    if (this.precio === null || !Number.isFinite(this.precio) || this.precio < 0) {
       this.errorMensaje = 'Ingresa un precio válido.';
       return false;
     }
 
-    if (this.cantidad === null || this.cantidad < 0) {
+    if (this.cantidad === null || !Number.isFinite(this.cantidad) || this.cantidad < 0) {
       this.errorMensaje = 'Ingresa una cantidad válida.';
       return false;
     }
@@ -53,37 +62,48 @@ export class NewProduct {
 
   crearProducto(): void {
     if (!this.validarFormulario()) return;
+    const categoria = this.categorias.find((opcion) => opcion === this.categoria);
+    if (!categoria) {
+      this.errorMensaje = 'Selecciona una categoría válida.';
+      return;
+    }
+    const precio = this.precio;
+    const cantidad = this.cantidad;
+    if (precio === null || cantidad === null) {
+      this.errorMensaje = 'Ingresa un precio y una cantidad válidos.';
+      return;
+    }
 
     this.guardando = true;
     this.errorMensaje = '';
 
-    const nuevoProducto: any = {
-      nombre: this.nombre,
-      descripcion: this.descripcion,
+    const nuevoProducto: NuevoProducto = {
+      nombre: this.nombre.trim(),
+      descripcion: this.descripcion.trim(),
       imagenes: this.imagenesTexto
         .split('\n')
         .map((imagen) => imagen.trim())
         .filter((imagen) => imagen.length > 0),
-      precio: this.precio,
-      cantidad: this.cantidad,
-      categoria: this.categoria,
-      disponible: this.disponible
+      precio,
+      cantidad,
+      categoria,
+      disponible: this.disponible,
+      ...(this.sku.trim() ? { sku: this.sku.trim() } : {}),
     };
 
-    // sku es opcional (unique + sparse en el modelo), solo lo mandamos si tiene valor
-    if (this.sku.trim()) {
-      nuevoProducto.sku = this.sku;
-    }
-
-    this.productosService.crearProducto(nuevoProducto).subscribe({
+    this.productosService.crearProducto(nuevoProducto).pipe(
+      finalize(() => this.changeDetector.markForCheck()),
+    ).subscribe({
       next: () => {
         this.guardando = false;
-        this.exitoMensaje = 'Producto creado correctamente.';
-        setTimeout(() => this.router.navigate(['/dashboard/productos']), 1200);
+        this.exitoMensaje = `¡${this.nombre.trim()} ha sido registrado con éxito!`;
+        this.catalogoService.recargar();
+        setTimeout(() => this.router.navigate(['/dashboard/productos']), 2200);
       },
       error: (err) => {
         this.guardando = false;
-        this.errorMensaje = err.error?.mensaje || 'Error al crear el producto.';
+        this.errorMensaje =
+          err.error?.mensaje || err.error?.message || 'Error al registrar el producto.';
       }
     });
   }

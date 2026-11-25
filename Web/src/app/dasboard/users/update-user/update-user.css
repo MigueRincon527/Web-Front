@@ -13,6 +13,7 @@
 .campo-form label { margin-bottom:6px; color:var(--texto-suave); }
 .campo-form input,.campo-form select { box-sizing:border-box; height:46px; border:1px solid var(--borde); border-radius:50px; background:#222; }
 .campo-form input:focus,.campo-form select:focus { outline:0; border-color:var(--lima); }
+.ayuda-rol { margin:8px 4px 0; color:var(--texto-suave); font-size:.85rem; line-height:1.45; }
 .botones-form { display:flex; gap:10px; width:100%; margin-top:8px; }
 .btn-cancelar,.btn-guardar { flex:1; height:46px; border-radius:50px; cursor:pointer; }
 .btn-cancelar { border:1px solid var(--borde); background:transparent; color:#fff; }

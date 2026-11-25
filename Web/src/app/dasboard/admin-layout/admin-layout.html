@@ -1,0 +1,26 @@
+<header class="admin-header">
+  <a class="admin-header__brand" routerLink="/dashboard" routerLinkActive="activo" [routerLinkActiveOptions]="{ exact: true }">
+    Administración
+  </a>
+
+  <nav class="admin-header__nav" aria-label="Navegación de administración">
+    <a
+      routerLink="/dashboard/productos"
+      routerLinkActive="activo"
+      ariaCurrentWhenActive="page"
+    >
+      Productos y stock
+    </a>
+    <a
+      routerLink="/dashboard/usuarios"
+      routerLinkActive="activo"
+      ariaCurrentWhenActive="page"
+    >
+      Control de usuarios
+    </a>
+  </nav>
+</header>
+
+<main>
+  <router-outlet></router-outlet>
+</main>

@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { computed, inject, Injectable, Signal, signal } from '@angular/core';
+import { Productos } from '../productos/productos';
 
 export type Seccion =
   | 'proteinas'
@@ -27,6 +28,8 @@ export interface ProductoCatalogo {
   imagen: string;
   alt: string;
   etiqueta?: string;
+  disponible?: boolean;
+  cantidad?: number;
 }
 
 /** Título y ruta de cada sección (para el enlace "Volver a..."). */
@@ -561,11 +564,109 @@ const PRODUCTOS: ProductoCatalogo[] = [
 
 @Injectable({ providedIn: 'root' })
 export class CatalogoService {
-  porSeccion(seccion: Seccion): ProductoCatalogo[] {
-    return PRODUCTOS.filter((p) => p.seccion === seccion);
+  private readonly productosService = inject(Productos);
+  private readonly productos = signal(PRODUCTOS);
+  readonly errorCarga = signal('');
+
+  constructor() {
+    this.recargar();
+  }
+
+  recargar(): void {
+    this.productosService.getProductos().subscribe({
+      next: (response) => {
+        const data = this.extraerLista(response);
+        if (!data) {
+          this.errorCarga.set('La respuesta de productos no tiene un formato válido.');
+          return;
+        }
+
+        const productos = data.map((producto) => this.convertirProducto(producto));
+        if (productos.some((producto) => producto === null)) {
+          this.errorCarga.set('Uno o más productos tienen datos incompatibles con el catálogo.');
+          return;
+        }
+
+        const seccionesGestionadas: Seccion[] = [
+          'proteinas',
+          'creatinas',
+          'pre-entrenos',
+          'accesorios',
+        ];
+        const productosEstaticos = PRODUCTOS.filter(
+          (producto) => !seccionesGestionadas.includes(producto.seccion),
+        );
+        this.productos.set([
+          ...productosEstaticos,
+          ...productos.filter((producto): producto is ProductoCatalogo => producto !== null),
+        ]);
+        this.errorCarga.set('');
+      },
+      error: () => {
+        this.errorCarga.set('No se pudieron cargar los productos de la tienda.');
+      },
+    });
+  }
+
+  porSeccion(seccion: Seccion): Signal<ProductoCatalogo[]> {
+    return computed(() => this.productos().filter((producto) => producto.seccion === seccion));
   }
 
   buscar(id: string): ProductoCatalogo | undefined {
-    return PRODUCTOS.find((p) => p.id === id);
+    return this.productos().find((producto) => producto.id === id);
+  }
+
+  private extraerLista(response: unknown): unknown[] | null {
+    let data: unknown = response;
+    if (!Array.isArray(data) && this.esRegistro(data)) {
+      data = data['datos'] ?? data['productos'];
+    }
+    return Array.isArray(data) ? data : null;
+  }
+
+  private convertirProducto(value: unknown): ProductoCatalogo | null {
+    if (!this.esRegistro(value)) return null;
+
+    const categorias: Record<string, Seccion> = {
+      Proteina: 'proteinas',
+      creatina: 'creatinas',
+      'pre-entrenos': 'pre-entrenos',
+      accesorios: 'accesorios',
+    };
+    const id = value['_id'] ?? value['id'];
+    const { nombre, descripcion, precio, cantidad, categoria, disponible } = value;
+    if (
+      typeof id !== 'string' ||
+      typeof nombre !== 'string' ||
+      typeof descripcion !== 'string' ||
+      typeof precio !== 'number' ||
+      typeof cantidad !== 'number' ||
+      typeof categoria !== 'string' ||
+      !categorias[categoria] ||
+      (disponible !== undefined && typeof disponible !== 'boolean')
+    ) {
+      return null;
+    }
+
+    const imagenes = Array.isArray(value['imagenes']) ? value['imagenes'] : [];
+    const imagen = imagenes.find((item): item is string => typeof item === 'string') ?? '';
+    return {
+      id,
+      seccion: categorias[categoria],
+      categoria,
+      nombre,
+      descripcion,
+      descripcionLarga: descripcion,
+      datos: [],
+      precio,
+      imagen,
+      alt: nombre,
+      disponible: disponible !== false,
+      cantidad,
+    };
+  }
+
+  private esRegistro(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
   }
 }

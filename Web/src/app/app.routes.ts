@@ -11,6 +11,7 @@ import { Vitaminas } from './Pages/vitaminas/vitaminas';
 import { Carrito } from './Pages/carrito/carrito';
 import { Producto } from './Components/producto/producto';
 import { Dashboard } from './dasboard/admin/admin';
+import { AdminLayout } from './dasboard/admin-layout/admin-layout';
 import { AllProducts } from './dasboard/products/all-products/all-products';
 import { NewProduct } from './dasboard/products/new-product/new-product';
 import { UpdateProduct } from './dasboard/products/update-product/update-product';
@@ -39,6 +40,7 @@ export const routes: Routes = [
     { path: 'producto/:id', component: Producto },
     {
       path: 'dashboard',
+      component: AdminLayout,
       canActivate: [adminGuard],
       children: [
         { path: '', component: Dashboard },

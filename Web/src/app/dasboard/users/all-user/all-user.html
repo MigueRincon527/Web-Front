@@ -42,7 +42,7 @@
     </tbody>
   </table>
 
-  <div class="sin-usuarios" *ngIf="!cargando && usuarios.length === 0">
+  <div class="sin-usuarios" *ngIf="!cargando && !errorMensaje && usuarios.length === 0">
     No hay usuarios registrados.
   </div>
 </div>

@@ -13,7 +13,7 @@ export class Creatinas {
   private readonly carrito = inject(CarritoService);
   private readonly catalogo = inject(CatalogoService);
 
-  readonly filtros: string[] = ['Todas', 'Monohidrato', 'Micronizada', 'HCl', 'Cápsulas'];
+  readonly filtros: string[] = ['Todas', 'creatina'];
 
   private readonly productos = this.catalogo.porSeccion('creatinas');
 
@@ -22,8 +22,8 @@ export class Creatinas {
   readonly productosFiltrados = computed(() => {
     const filtro = this.filtroActivo();
     return filtro === this.filtros[0]
-      ? this.productos
-      : this.productos.filter((p) => p.categoria === filtro);
+      ? this.productos()
+      : this.productos().filter((p) => p.categoria === filtro);
   });
 
   seleccionarFiltro(filtro: string): void {

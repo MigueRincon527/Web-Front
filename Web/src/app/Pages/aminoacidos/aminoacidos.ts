@@ -22,8 +22,8 @@ export class Aminoacidos {
   readonly productosFiltrados = computed(() => {
     const filtro = this.filtroActivo();
     return filtro === this.filtros[0]
-      ? this.productos
-      : this.productos.filter((p) => p.categoria === filtro);
+      ? this.productos()
+      : this.productos().filter((p) => p.categoria === filtro);
   });
 
   seleccionarFiltro(filtro: string): void {

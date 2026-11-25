@@ -1,8 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Productos } from '../../../Services/productos/productos';
+import { finalize } from 'rxjs';
+import { NuevoProducto, ProductoBaseDatos, Productos } from '../../../Services/productos/productos';
+import { CatalogoService } from '../../../Services/catalogo.service/catalogo.service';
 
 @Component({
   selector: 'app-update-product',
@@ -13,10 +15,12 @@ import { Productos } from '../../../Services/productos/productos';
 })
 export class UpdateProduct implements OnInit {
   private productosService = inject(Productos);
+  private catalogoService = inject(CatalogoService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private changeDetector = inject(ChangeDetectorRef);
 
-  categorias: string[] = ['Proteina', 'creatina', 'pre-entrenos', 'accesorios'];
+  categorias: ProductoBaseDatos['categoria'][] = ['Proteina', 'creatina', 'pre-entrenos', 'accesorios'];
 
   productoId: string = '';
   nombre: string = '';
@@ -24,11 +28,12 @@ export class UpdateProduct implements OnInit {
   imagenesTexto: string = '';
   precio: number | null = null;
   cantidad: number | null = null;
-  categoria: string = '';
+  categoria: ProductoBaseDatos['categoria'] | '' = '';
   sku: string = '';
   disponible: boolean = true;
 
   cargando: boolean = true;
+  productoCargado: boolean = false;
   guardando: boolean = false;
   errorMensaje: string = '';
   exitoMensaje: string = '';
@@ -46,17 +51,41 @@ export class UpdateProduct implements OnInit {
   }
 
   cargarProducto(): void {
-    this.productosService.getProductoPorId(this.productoId).subscribe({
-      next: (response: any) => {
-        const p = response.datos;
-        this.nombre = p.nombre;
-        this.descripcion = p.descripcion;
-        this.imagenesTexto = Array.isArray(p.imagenes) ? p.imagenes.join('\n') : '';
-        this.precio = p.precio;
-        this.cantidad = p.cantidad;
-        this.categoria = p.categoria;
-        this.sku = p.sku || '';
-        this.disponible = p.disponible;
+    this.productosService.getProductoPorId(this.productoId).pipe(
+      finalize(() => this.changeDetector.markForCheck()),
+    ).subscribe({
+      next: (response: unknown) => {
+        const p = this.extraerProducto(response);
+        if (
+          !p ||
+          typeof p['nombre'] !== 'string' ||
+          typeof p['descripcion'] !== 'string' ||
+          typeof p['precio'] !== 'number' ||
+          typeof p['cantidad'] !== 'number' ||
+          typeof p['categoria'] !== 'string'
+        ) {
+          this.errorMensaje = 'El servidor no devolvió un producto válido.';
+          this.cargando = false;
+          return;
+        }
+
+        this.nombre = p['nombre'];
+        this.descripcion = p['descripcion'];
+        this.imagenesTexto = Array.isArray(p['imagenes'])
+          ? p['imagenes'].filter((imagen: unknown) => typeof imagen === 'string').join('\n')
+          : '';
+        this.precio = p['precio'];
+        this.cantidad = p['cantidad'];
+        const categoria = this.categorias.find((opcion) => opcion === p['categoria']);
+        if (!categoria) {
+          this.errorMensaje = 'El producto tiene una categoría no válida.';
+          this.cargando = false;
+          return;
+        }
+        this.categoria = categoria;
+        this.sku = typeof p['sku'] === 'string' ? p['sku'] : '';
+        this.disponible = p['disponible'] !== false;
+        this.productoCargado = true;
         this.cargando = false;
       },
       error: (err) => {
@@ -67,41 +96,78 @@ export class UpdateProduct implements OnInit {
   }
 
   guardarCambios(): void {
+    if (this.guardando) return;
+
     this.errorMensaje = '';
     this.exitoMensaje = '';
+    if (
+      !this.nombre.trim() ||
+      !this.descripcion.trim() ||
+      !this.categoria ||
+      !this.categorias.includes(this.categoria) ||
+      this.precio === null ||
+      !Number.isFinite(this.precio) ||
+      this.precio < 0 ||
+      this.cantidad === null ||
+      !Number.isFinite(this.cantidad) ||
+      this.cantidad < 0
+    ) {
+      this.errorMensaje = 'Completa los campos obligatorios con valores válidos.';
+      return;
+    }
+
+    const precio = this.precio;
+    const cantidad = this.cantidad;
+    const categoria = this.categorias.find((opcion) => opcion === this.categoria);
+    if (precio === null || cantidad === null || !categoria) {
+      this.errorMensaje = 'Completa los campos obligatorios con valores válidos.';
+      return;
+    }
+
     this.guardando = true;
 
-    const datosActualizados: any = {
-      nombre: this.nombre,
-      descripcion: this.descripcion,
+    const datosActualizados: NuevoProducto = {
+      nombre: this.nombre.trim(),
+      descripcion: this.descripcion.trim(),
       imagenes: this.imagenesTexto
         .split('\n')
         .map((imagen) => imagen.trim())
         .filter((imagen) => imagen.length > 0),
-      precio: this.precio,
-      cantidad: this.cantidad,
-      categoria: this.categoria,
-      disponible: this.disponible
+      precio,
+      cantidad,
+      categoria,
+      disponible: this.disponible,
+      sku: this.sku.trim()
     };
 
-    if (this.sku.trim()) {
-      datosActualizados.sku = this.sku;
-    }
-
-    this.productosService.actualizarProducto(this.productoId, datosActualizados).subscribe({
-      next: () => {
+    this.productosService.actualizarProducto(this.productoId, datosActualizados).pipe(
+      finalize(() => {
         this.guardando = false;
+        this.changeDetector.markForCheck();
+      }),
+    ).subscribe({
+      next: () => {
         this.exitoMensaje = 'Producto actualizado correctamente.';
+        this.catalogoService.recargar();
         setTimeout(() => this.router.navigate(['/dashboard/productos']), 1200);
       },
       error: (err) => {
-        this.guardando = false;
-        this.errorMensaje = err.error?.mensaje || 'Error al actualizar el producto.';
+        this.errorMensaje = err.error?.mensaje || err.error?.message || 'Error al actualizar el producto.';
       }
     });
   }
 
   cancelar(): void {
     this.router.navigate(['/dashboard/productos']);
+  }
+
+  private extraerProducto(response: unknown): Record<string, unknown> | null {
+    if (!this.esRegistro(response)) return null;
+    const data = response['datos'] ?? response['producto'] ?? response;
+    return this.esRegistro(data) ? data : null;
+  }
+
+  private esRegistro(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
   }
 }

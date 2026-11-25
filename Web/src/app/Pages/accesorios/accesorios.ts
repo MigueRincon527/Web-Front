@@ -13,7 +13,7 @@ export class Accesorios {
   private readonly carrito = inject(CarritoService);
   private readonly catalogo = inject(CatalogoService);
 
-  readonly filtros: string[] = ['Todos', 'Shakers', 'Cinturones', 'Agarre'];
+  readonly filtros: string[] = ['Todos', 'accesorios'];
 
   private readonly productos = this.catalogo.porSeccion('accesorios');
 
@@ -22,8 +22,8 @@ export class Accesorios {
   readonly productosFiltrados = computed(() => {
     const filtro = this.filtroActivo();
     return filtro === this.filtros[0]
-      ? this.productos
-      : this.productos.filter((p) => p.categoria === filtro);
+      ? this.productos()
+      : this.productos().filter((p) => p.categoria === filtro);
   });
 
   seleccionarFiltro(filtro: string): void {

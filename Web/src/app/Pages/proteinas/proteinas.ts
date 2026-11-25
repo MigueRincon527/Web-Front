@@ -13,7 +13,7 @@ export class Proteinas {
   private readonly carrito = inject(CarritoService);
   private readonly catalogo = inject(CatalogoService);
 
-  readonly filtros: string[] = ['Todas', 'Whey', 'Aislada', 'Caseína', 'Vegetal'];
+  readonly filtros: string[] = ['Todas', 'Proteina'];
 
   private readonly productos = this.catalogo.porSeccion('proteinas');
 
@@ -22,8 +22,8 @@ export class Proteinas {
   readonly productosFiltrados = computed(() => {
     const filtro = this.filtroActivo();
     return filtro === this.filtros[0]
-      ? this.productos
-      : this.productos.filter((p) => p.categoria === filtro);
+      ? this.productos()
+      : this.productos().filter((p) => p.categoria === filtro);
   });
 
   seleccionarFiltro(filtro: string): void {

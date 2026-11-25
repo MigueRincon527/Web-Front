@@ -6,11 +6,11 @@
       <p>Actualiza la información del usuario</p>
     </div>
 
-    <div class="mensaje-error" *ngIf="errorMensaje">
+    <div class="mensaje-error" *ngIf="errorMensaje" role="alert">
       ⚠️ {{ errorMensaje }}
     </div>
 
-    <div class="mensaje-exito" *ngIf="exitoMensaje">
+    <div class="mensaje-exito" *ngIf="exitoMensaje" role="status" aria-live="polite">
       ✅ {{ exitoMensaje }}
     </div>
 
@@ -44,19 +44,23 @@
 
       <div class="campo-form">
         <label for="rol">Rol</label>
-        <select id="rol" name="rol" [(ngModel)]="rol">
+        <select id="rol" name="rol" [(ngModel)]="rol" required [disabled]="guardando">
           <option value="usuario">Usuario</option>
           <option value="admin">Admin</option>
         </select>
+        <p class="ayuda-rol">Admin concede acceso al panel de administración; Usuario mantiene permisos normales.</p>
       </div>
 
       <div class="botones-form">
         <button type="button" class="btn-cancelar" (click)="cancelar()">
           Cancelar
         </button>
-        <button type="submit" class="btn-guardar" [disabled]="guardando">
-          <span *ngIf="!guardando">Guardar cambios</span>
-          <span *ngIf="guardando">Guardando...</span>
+        <button
+          type="submit"
+          class="btn-guardar"
+          [disabled]="guardando || editarForm.invalid"
+          [attr.aria-label]="guardando ? 'Guardando cambios' : 'Guardar cambios'">
+          {{ guardando ? 'Guardando cambios...' : 'Guardar cambios' }}
         </button>
       </div>
 

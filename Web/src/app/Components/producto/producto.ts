@@ -39,6 +39,11 @@ export class Producto {
     return id ? this.catalogo.buscar(id) : undefined;
   });
 
+  readonly disponibleParaCompra = computed(() => {
+    const producto = this.producto();
+    return !!producto && producto.disponible !== false && producto.cantidad !== 0;
+  });
+
   readonly seccion = computed(() => {
     const p = this.producto();
     return p ? SECCIONES[p.seccion] : undefined;
@@ -81,10 +86,14 @@ export class Producto {
 
   // ---------- Acciones ----------
   cambiarCantidad(cambio: number): void {
-    this.cantidad.update((c) => Math.min(99, Math.max(1, c + cambio)));
+    const stock = this.producto()?.cantidad ?? 99;
+    const maximo = Math.max(1, Math.min(99, stock));
+    this.cantidad.update((actual) => Math.min(maximo, Math.max(1, actual + cambio)));
   }
 
   agregarAlCarrito(producto: ProductoCatalogo): void {
+    if (!this.disponibleParaCompra()) return;
+
     this.carrito.agregar(
       {
         id: producto.id,

@@ -6,11 +6,11 @@
       <p>Actualiza la información del producto</p>
     </div>
 
-    <div class="mensaje-error" *ngIf="errorMensaje">
+    <div class="mensaje-error" *ngIf="errorMensaje" role="alert">
       ⚠️ {{ errorMensaje }}
     </div>
 
-    <div class="mensaje-exito" *ngIf="exitoMensaje">
+    <div class="mensaje-exito" *ngIf="exitoMensaje" role="status" aria-live="polite">
       ✅ {{ exitoMensaje }}
     </div>
 
@@ -18,33 +18,33 @@
       Cargando producto...
     </div>
 
-    <form (ngSubmit)="guardarCambios()" #productoForm="ngForm" *ngIf="!cargando && !errorMensaje">
+    <form (ngSubmit)="guardarCambios()" #productoForm="ngForm" *ngIf="!cargando && productoCargado">
 
       <div class="campo-form">
         <label for="nombre">Nombre</label>
-        <input type="text" id="nombre" name="nombre" [(ngModel)]="nombre" />
+        <input type="text" id="nombre" name="nombre" [(ngModel)]="nombre" required />
       </div>
 
       <div class="campo-form">
         <label for="descripcion">Descripción</label>
-        <textarea id="descripcion" name="descripcion" [(ngModel)]="descripcion" rows="3"></textarea>
+        <textarea id="descripcion" name="descripcion" [(ngModel)]="descripcion" rows="3" required></textarea>
       </div>
 
       <div class="fila-doble">
         <div class="campo-form">
           <label for="precio">Precio</label>
-          <input type="number" id="precio" name="precio" [(ngModel)]="precio" min="0" />
+          <input type="number" id="precio" name="precio" [(ngModel)]="precio" min="0" required />
         </div>
 
         <div class="campo-form">
           <label for="cantidad">Cantidad</label>
-          <input type="number" id="cantidad" name="cantidad" [(ngModel)]="cantidad" min="0" />
+          <input type="number" id="cantidad" name="cantidad" [(ngModel)]="cantidad" min="0" required />
         </div>
       </div>
 
       <div class="campo-form">
         <label for="categoria">Categoría</label>
-        <select id="categoria" name="categoria" [(ngModel)]="categoria">
+        <select id="categoria" name="categoria" [(ngModel)]="categoria" required>
           <option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</option>
         </select>
       </div>
@@ -74,9 +74,8 @@
 
       <div class="botones-form">
         <button type="button" class="btn-cancelar" (click)="cancelar()">Cancelar</button>
-        <button type="submit" class="btn-guardar" [disabled]="guardando">
-          <span *ngIf="!guardando">Guardar cambios</span>
-          <span *ngIf="guardando">Guardando...</span>
+        <button type="submit" class="btn-guardar" [disabled]="guardando || productoForm.invalid">
+          {{ guardando ? 'Guardando cambios...' : 'Guardar cambios' }}
         </button>
       </div>
 

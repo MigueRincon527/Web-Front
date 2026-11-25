@@ -6,7 +6,9 @@
 
     <div class="detalle__principal">
       <div class="detalle__imagen">
-        <img [src]="p.imagen" [alt]="p.alt">
+        @if (p.imagen) {
+          <img [src]="p.imagen" [alt]="p.alt">
+        }
       </div>
 
       <div class="detalle__info">
@@ -45,8 +47,12 @@
               aria-label="Agregar una unidad"
               (click)="cambiarCantidad(1)">+</button>
           </div>
-          <button type="button" class="compra__agregar" (click)="agregarAlCarrito(p)">
-            Agregar al carrito
+          <button
+            type="button"
+            class="compra__agregar"
+            [disabled]="!disponibleParaCompra()"
+            (click)="agregarAlCarrito(p)">
+          {{ disponibleParaCompra() ? 'Agregar al carrito' : 'Agotado' }}
           </button>
         </div>
 

@@ -6,7 +6,11 @@
 .btn-nuevo { border-radius:50px; padding:12px 20px; background:var(--lima); color:#000; font-family:var(--fuente-titulos); font-weight:700; text-transform:uppercase; }
 .btn-nuevo:hover { background:#a6e600; }
 .mensaje-error { margin-bottom:18px; border:1px solid #7d3b3b; border-radius:12px; padding:12px 16px; background:#4a2929; }
+.btn-reintentar { margin-left:12px; border:0; border-radius:50px; padding:7px 12px; background:var(--lima); color:#000; font-weight:700; cursor:pointer; }
 .cargando,.sin-productos { padding:40px 20px; border:1px solid var(--borde); border-radius:20px; background:var(--superficie); text-align:center; color:var(--texto-suave); }
+.filtros-categoria { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+.filtros-categoria button { border:1px solid var(--borde); border-radius:50px; padding:9px 16px; background:var(--superficie); color:#fff; cursor:pointer; }
+.filtros-categoria button:hover,.filtros-categoria button.filtro-activo { border-color:var(--lima); background:var(--lima); color:#000; }
 .grid-productos { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:24px; }
 .tarjeta-producto { position:relative; display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--borde); border-radius:20px; background:var(--superficie); transition:border-color .2s,transform .2s; }
 .tarjeta-producto:hover { border-color:var(--lima); transform:translateY(-4px); }
